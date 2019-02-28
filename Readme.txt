@@ -1,1 +1,2 @@
-Comp 3008 Project 1
+Comp 3008 Project 2
+
