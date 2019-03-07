@@ -47,7 +47,7 @@ function formatCSV(csv) {
   return result;
 }
 
-function elapsedTime(firstStamp, secondStamp) { //returns the difference between the two timestamps
+function elapsedTime(firstStamp, secondStamp) { //returns the difference between the two timestamps in seconds
     var t1 = firstStamp.split(" ")[1].split(":");
     var t2 = secondStamp.split(" ")[1].split(":"); 
 
@@ -59,3 +59,12 @@ function elapsedTime(firstStamp, secondStamp) { //returns the difference between
     return seconds2 - seconds1;
 }
 
+function formatSeconds(sec){ //HH:MM:SS
+  var hours = Math.floor(sec/3600);
+  sec -= hours*3600;
+
+  var mins = Math.floor(sec/60);
+  sec -=mins*60;
+
+  return hours.toString()+":"+mins.toString()+":"+sec.toString();
+}
