@@ -25,7 +25,7 @@ window.addEventListener('load',function(){
     var reader = new FileReader();
 
     reader.onload = function () {
-      data2 = formatCSV(reader.result);
+      data2 = formatTextCSV(reader.result);
       console.log(data);
     };
     // start reading the file. When it is done, calls the onload event defined above.
@@ -80,13 +80,24 @@ function formatImageCSV(csv) {
       imageData.push(line);
     }
     lineSize++;
-  
+
   }
-
-  
-  
-
 // TODO
+
+  return result;
+}
+
+
+function formatTextCSV(csv) {
+  var lines = csv.split("\n");
+  var result = [];
+
+  var users = [];
+  var successfulLogins = [];
+
+  //format data
+
+  // TODO
 
   return result;
 }
