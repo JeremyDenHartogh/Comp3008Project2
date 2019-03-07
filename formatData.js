@@ -106,13 +106,53 @@ function formatImageCSV(csv) {
 
 
 function formatTextCSV(csv) {
-  var lines = csv.split("\n");
+  var lines=csv.split("\n");
 
   var users = [];
 
   //format data
+  var textData = [];
+  var textDataVals = csv.split(",");
+  var lineSize = 0;
+  for (var i = 0; i < textDataVals.length; i++) {
+    if (lineSize == 0) {
+      var line = [];
+    }
+    line.push(textDataVals[i]);
+    if (lineSize == 8) {
+      lineSize = 0;
+      textData.push(line);
+    }
+    lineSize++;
+  }
 
-  // TODO
+  //store text data
+  for(var i = 0; i<textData.length; i++){
+    if(!users.includes(textData[i][1])){
+      var u = [];
+      u.id = textData[i][1];
+      u.scheme = "text21";
+      u.successfulLogins =  [];
+      u.failedLogins = [];
+      users.push(u);
+    }
+    if (textData[i][5] === "login") {
+
+      if(textData[i][6] === "failure") {
+        var elapsedTime = elapsedTime(textData[i-2][0], textData[i-1][0]);
+        var failedLogin;
+        failedLogin.loginAttempt = elapsedTime;
+        users.find(textData[i][1]).failedLogins.push(failedLogin);
+      }
+      else if(textData[i][6] === "success") {
+        var elapsedTime = elapsedTime(textData[i-2][0], textData[i-1][0]);
+        var successfulLogin;
+        successfulLogin.loginAttempt = elapsedTime;
+        users.find(textData[i][1]).successfulLogins.push(successfulLogin);
+      }
+    }
+
+  }
 
   return users;
 }
@@ -176,7 +216,7 @@ function combineData(data1, data2){
 
 function elapsedTime(firstStamp, secondStamp) { //returns the difference between the two timestamps in seconds
     var t1 = firstStamp.split(" ")[1].split(":");
-    var t2 = secondStamp.split(" ")[1].split(":"); 
+    var t2 = secondStamp.split(" ")[1].split(":");
 
     if (parseInt(t1[0]) > parseInt(t2[0])) t2[0] = parseInt(t2[0]) + 12;
 
