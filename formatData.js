@@ -1,24 +1,41 @@
 
 
 window.addEventListener('load',function(){
-  var fileInput = document.getElementById("csv"),
+  var fileInput = document.getElementById("csv1");
+  var data = [];
   readFile = function () {
     var reader = new FileReader();
 
     reader.onload = function () {
-      data = formatCSV(reader.result);
+      data1 = formatCSV(reader.result);
       console.log(data);
 
-      //add download link to html
-      var link = document.getElementById('downloadlink');
-      link.href = makeFile(JSON.stringify(data, null, 2));
-      link.style.display = 'block';
+
     };
     // start reading the file. When it is done, calls the onload event defined above.
     reader.readAsBinaryString(fileInput.files[0]);
 
   };
   fileInput.addEventListener('change', readFile);
+
+  var fileInput2 = document.getElementById("csv2");
+  readFile = function () {
+    var reader = new FileReader();
+
+    reader.onload = function () {
+      data = formatCSV(reader.result);
+      console.log(data);
+    };
+    // start reading the file. When it is done, calls the onload event defined above.
+    reader.readAsBinaryString(fileInput2.files[0]);
+
+    //add download link to html
+    var link = document.getElementById('downloadlink');
+    link.href = makeFile(JSON.stringify(data, null, 2));
+    link.style.display = 'block';
+  };
+  fileInput2.addEventListener('change', readFile);
+
 
 
 });
