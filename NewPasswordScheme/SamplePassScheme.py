@@ -168,3 +168,9 @@ while not done:
 	pygame.display.flip()
 	# --- Limit to 60 frames per second
 	clock.tick(60)
+
+	
+	
+# TO DO LIST
+# CREATE GET NEW PASSWORD SCREEN
+# CREATE HOME SCREEN
