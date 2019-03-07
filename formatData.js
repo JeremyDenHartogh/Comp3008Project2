@@ -23,11 +23,14 @@ window.addEventListener('load',function(){
     var reader = new FileReader();
 
     reader.onload = function () {
-      data = formatCSV(reader.result);
+      data2 = formatCSV(reader.result);
       console.log(data);
     };
     // start reading the file. When it is done, calls the onload event defined above.
     reader.readAsBinaryString(fileInput2.files[0]);
+
+    //combine data1 and data2 into data
+    // TODO
 
     //add download link to html
     var link = document.getElementById('downloadlink');
