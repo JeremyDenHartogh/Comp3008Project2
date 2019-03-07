@@ -62,23 +62,15 @@ function formatImageCSV(csv) {
 
   //format data
   var imageData = [];
-  var imageDataVals = csv.split(",");
   var lineSize = 0;
-  for (var i = 0; i < imageDataVals.length; i++) {
-    if (lineSize == 0) {
-      var line = [];
-    }
-    line.push(imageDataVals[i]);
-    if (lineSize == 8) {
-      lineSize = 0;
-      imageData.push(line);
-    }
-    lineSize++;
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].split(",");
+    imageData.push(line);
   }
 
   //store image data
   for(var i = 0; i<imageData.length; i++){
-    if(!users.includes(imageData[i][1])){
+    if(!contains(imageData[i][1], users)){
       var u = [];
       u.id = imageData[i][1];
       u.scheme = "Image21";
@@ -104,6 +96,14 @@ function formatImageCSV(csv) {
   return users;
 }
 
+function contains(id, users){
+  for(var i = 0; i<users.length; i++){
+    if(id == users[i].id){
+      return true;
+    }
+  }
+  return false;
+}
 
 function formatTextCSV(csv) {
   var lines=csv.split("\n");
@@ -159,7 +159,7 @@ function formatTextCSV(csv) {
 
 function combineData(data1, data2){
   var data = [[]]; //userid, scheme (Text21 or Image21), numlogins, numSuccess, numFailed, time
-  for(var u in data1){
+  for(var u in data1){ //may not like this syntax
     for(var s in u.successfulLogins){
       var line = [];
       line.push(u.id);
