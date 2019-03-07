@@ -7,8 +7,10 @@ window.addEventListener('load',function(){
     var reader = new FileReader();
 
     reader.onload = function () {
-      data1 = formatCSV(reader.result);
-      console.log(data);
+
+    data1 = formatImageCSV(reader.result);
+
+    console.log(data);
 
 
     };
@@ -57,10 +59,32 @@ function makeFile(text){
 
 
 
-function formatCSV(csv) {
+function formatImageCSV(csv) {
   var lines=csv.split("\n");
   var result = [];
-  var headers = lines[0].split(",");
+  
+  var users = [];
+  var successfulLogins = [];
+  
+  //format data
+  var imageData = [];
+  var imageDataVals = csv.split(",");
+  var lineSize = 0;
+  for (var i = 0; i < imageDataVals.length; i++) {
+    if (lineSize == 0) {
+      var line = [];
+    }
+    line.push(imageDataVals[i]);
+    if (lineSize == 8) {
+      lineSize = 0;
+      imageData.push(line);
+    }
+    lineSize++;
+  
+  }
+
+  
+  
 
 // TODO
 
