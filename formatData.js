@@ -9,10 +9,6 @@ window.addEventListener('load',function(){
     reader.onload = function () {
 
     data1 = formatImageCSV(reader.result);
-
-    console.log(data);
-
-
     };
     // start reading the file. When it is done, calls the onload event defined above.
     reader.readAsBinaryString(fileInput.files[0]);
@@ -23,16 +19,16 @@ window.addEventListener('load',function(){
   var fileInput2 = document.getElementById("csv2");
   readFile = function () {
     var reader = new FileReader();
-
+    var data2;
     reader.onload = function () {
       data2 = formatTextCSV(reader.result);
-      console.log(data);
     };
     // start reading the file. When it is done, calls the onload event defined above.
     reader.readAsBinaryString(fileInput2.files[0]);
 
     //combine data1 and data2 into data
-    // TODO
+    data = combineData(data1, data2);
+    console.log(data);
 
     //add download link to html
     var link = document.getElementById('downloadlink');
@@ -61,11 +57,9 @@ function makeFile(text){
 
 function formatImageCSV(csv) {
   var lines=csv.split("\n");
-  var result = [];
-  
+
   var users = [];
-  var successfulLogins = [];
-  
+
   //format data
   var imageData = [];
   var imageDataVals = csv.split(",");
@@ -80,26 +74,104 @@ function formatImageCSV(csv) {
       imageData.push(line);
     }
     lineSize++;
+  }
+
+  //store image data
+  for(var i = 0; i<imageData.length; i++){
+    if(!users.includes(imageData[i][1])){
+      var u = [];
+      u.id = imageData[i][1];
+      u.scheme = "Image21";
+      u.successfulLogins =  [];
+      u.failedLogins = [];
+      users.push(u);
+    }
+    if(imageData[i][6] === "badLogin"){
+      var elapsedTime = elapsedTime(imageData[i-2][0], imageData[i-1][0]);
+      var failedLogin;
+      failedLogin.loginAttempt = elapsedTime;
+      users.find(imageData[i][1]).failedLogins.push(failedLogin);
+    }
+    else if(imageData[i][6] === "goodLogin"){
+      var elapsedTime = elapsedTime(imageData[i-2][0], imageData[i-1][0]);
+      var successfulLogin;
+      successfulLogin.loginAttempt = elapsedTime;
+      users.find(imageData[i][1]).successfulLogins.push(successfulLogin);
+    }
 
   }
-// TODO
 
-  return result;
+  return users;
 }
 
 
 function formatTextCSV(csv) {
   var lines = csv.split("\n");
-  var result = [];
 
   var users = [];
-  var successfulLogins = [];
 
   //format data
 
   // TODO
 
-  return result;
+  return users;
+}
+
+function combineData(data1, data2){
+  var data = [[]]; //userid, scheme (Text21 or Image21), numlogins, numSuccess, numFailed, time
+  for(var u in data1){
+    for(var s in u.successfulLogins){
+      var line = [];
+      line.push(u.id);
+      line.push(u.scheme);
+      line.push(u.successfulLogins.length + u.failedLogins.length);
+      line.push(u.successfulLogins.length);
+      line.push(u.failedLogins.length);
+      line.push(s.time);
+
+      data.push(line);
+    }
+
+    for(var f in u.failedLogins){
+      var line = [];
+      line.push(u.id);
+      line.push(u.scheme);
+      line.push(u.successfulLogins.length + u.failedLogins.length);
+      line.push(u.successfulLogins.length);
+      line.push(u.failedLogins.length);
+      line.push(f.time);
+
+      data.push(line);
+    }
+  }
+
+  for(var u in data2){
+    for(var s in u.successfulLogins){
+      var line = [];
+      line.push(u.id);
+      line.push(u.scheme);
+      line.push(u.successfulLogins.length + u.failedLogins.length);
+      line.push(u.successfulLogins.length);
+      line.push(u.failedLogins.length);
+      line.push(s.time);
+
+      data.push(line);
+    }
+
+    for(var f in u.failedLogins){
+      var line = [];
+      line.push(u.id);
+      line.push(u.scheme);
+      line.push(u.successfulLogins.length + u.failedLogins.length);
+      line.push(u.successfulLogins.length);
+      line.push(u.failedLogins.length);
+      line.push(f.time);
+
+      data.push(line);
+    }
+  }
+
+  return data;
 }
 
 function elapsedTime(firstStamp, secondStamp) { //returns the difference between the two timestamps in seconds
