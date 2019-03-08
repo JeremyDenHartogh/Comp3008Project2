@@ -5,14 +5,14 @@ import pygame_textinput
 
 pygame.init()
 
-colours = ["BLUE","RED","GREEN","ORANGE","YELLOW","PURPLE","PINK","WHITE","BURGUNDY","TURQUOISE","NAVY",
-					 "BLACK","GREY","EVERGREEN"]
+# colours = ["BLUE","RED","GREEN","ORANGE","YELLOW","PURPLE","PINK","WHITE","BURGUNDY","TURQUOISE","NAVY",
+#					 "BLACK","GREY","EVERGREEN"]
 cd = {"WHITE":(255,255,255), "YELLOW":(254,254,8), "TURQUOISE":(64,224,208), "PINK":(253,105,180),
        "ORANGE":(252,140,7), "GREEN":(6,251,6), "GREY":(129,129,129), "BLUE":(60,130,250),
 			 "RED":(249,5,5), "EVERGREEN":(4,80,30), "PURPLE":(100,3,150), "BURGUNDY":(128,2,32),
 			 "NAVY":(1,1,127), "BLACK":(0,0,0)}
 
-size = (700,500)
+size = (900,700)
 screen = pygame.display.set_mode(size)
 done = False
 clock = pygame.time.Clock()
@@ -59,9 +59,9 @@ def createColours(clicked, clicking, font, pressedColours):
 			pygame.draw.rect(screen, cd["WHITE"], [x, y, 80, 50],2)
 			if click[0] == 1 and clicking == False:
 				clicking = True
-				print (f"CLICKED: {key}")
+				print ("CLICKED: " + key)
 				pressedColours[clicked] = cd[key][clicked]
-				print (f"{pressedColours} - {cd[key]}")
+				print (cd[key])
 				clicked += 1
 		else:
 			pygame.draw.rect(screen, cd["BLACK"], [x, y, 80, 50],2)
@@ -86,7 +86,10 @@ def enterPasswordScreen(name, password, clicked, clicking, pressedColours, rChan
 	# displays users password colour
 	pygame.draw.rect(screen, combinedColors, [150, 300, 400, 100],0)
 	pygame.draw.rect(screen, cd["BLACK"], [150, 300, 400, 100],2)
-	textSurf,textRect = fontL.render(str(combinedColors) , cd["BLACK"])
+	textColour = cd["WHITE"]
+	if (getLuminosity(combinedColors) >= 128):
+		textColour = cd["BLACK"]
+	textSurf,textRect = fontL.render(str(combinedColors) , textColour)
 	textRect.center = ((150+(400/2)),(300+(100/2)))
 	screen.blit(textSurf, textRect)
 	
@@ -104,6 +107,7 @@ def enterPasswordScreen(name, password, clicked, clicking, pressedColours, rChan
 			
 	# display text input box and label
 	textSurf,textRect = fontL.render("ENTER 2 LETTER PASSWORD", cd["BLACK"])
+	# center text
 	textRect.center = ((250+(200/2)),(170+(60/2)))
 	screen.blit(textSurf, textRect)
 	pygame.draw.rect(screen, cd["BLACK"], [250, 220, 200, 60],2)
