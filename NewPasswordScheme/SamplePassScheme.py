@@ -12,11 +12,7 @@ cd = {"WHITE":(255,255,255), "YELLOW":(254,254,8), "TURQUOISE":(64,224,208), "PI
 			 "RED":(249,5,5), "EVERGREEN":(4,80,30), "PURPLE":(100,3,150), "BURGUNDY":(128,2,32),
 			 "NAVY":(1,1,127), "BLACK":(0,0,0)}
 
-<<<<<<< HEAD
-size = (900,700)
-=======
 size = (700,600)
->>>>>>> b0580e01fa4f412e8982216715d37f12dd8d4f21
 screen = pygame.display.set_mode(size)
 done = False
 clock = pygame.time.Clock()
@@ -121,7 +117,6 @@ def enterPasswordScreen(name, password, clicked, clicking, pressedColours, rChan
 	combinedColors = ((pressedColours[0]+(rChange*10)) % 255,(pressedColours[1]+(gChange*10)) % 255,(pressedColours[2]+(bChange*10)) % 255)
 	
 	# displays users password colour
-<<<<<<< HEAD
 	pygame.draw.rect(screen, combinedColors, [150, 300, 400, 100],0)
 	pygame.draw.rect(screen, cd["BLACK"], [150, 300, 400, 100],2)
 	textColour = cd["WHITE"]
@@ -129,12 +124,6 @@ def enterPasswordScreen(name, password, clicked, clicking, pressedColours, rChan
 		textColour = cd["BLACK"]
 	textSurf,textRect = fontL.render(str(combinedColors) , textColour)
 	textRect.center = ((150+(400/2)),(300+(100/2)))
-=======
-	pygame.draw.rect(screen, combinedColors, [150, 400, 400, 100],0)
-	pygame.draw.rect(screen, cd["BLACK"], [150, 400, 400, 100],2)
-	textSurf,textRect = fontL.render(str(combinedColors) , cd["BLACK"])
-	textRect.center = ((150+(400/2)),(400+(100/2)))
->>>>>>> b0580e01fa4f412e8982216715d37f12dd8d4f21
 	screen.blit(textSurf, textRect)
 	
 	# create inputted text box
@@ -151,12 +140,7 @@ def enterPasswordScreen(name, password, clicked, clicking, pressedColours, rChan
 			
 	# display text input box and label
 	textSurf,textRect = fontL.render("ENTER 2 LETTER PASSWORD", cd["BLACK"])
-<<<<<<< HEAD
-	# center text
-	textRect.center = ((250+(200/2)),(170+(60/2)))
-=======
 	textRect.center = ((250+(200/2)),(270+(60/2)))
->>>>>>> b0580e01fa4f412e8982216715d37f12dd8d4f21
 	screen.blit(textSurf, textRect)
 	pygame.draw.rect(screen, cd["BLACK"], [250, 320, 200, 60],2)
 	textRect.center = ((250+(200/2)),(320+(60/2)))
