@@ -5,12 +5,12 @@ import pygame_textinput
 
 pygame.init()
 
-# colours = ["BLUE","RED","GREEN","ORANGE","YELLOW","PURPLE","PINK","WHITE","BURGUNDY","TURQUOISE","NAVY",
-#					 "BLACK","GREY","EVERGREEN"]
+colours = ["WHITE", "YELLOW", "TURQUOISE", "PINK", "ORANGE", "GREEN", "GREY", "BLUE", "RED", 
+		   "EVERGREEN", "PURPLE", "BURGUNDY", "NAVY", "BLACK"]
 cd = {"WHITE":(255,255,255), "YELLOW":(254,254,8), "TURQUOISE":(64,224,208), "PINK":(253,105,180),
-       "ORANGE":(252,140,7), "GREEN":(6,251,6), "GREY":(129,129,129), "BLUE":(60,130,250),
-			 "RED":(249,5,5), "EVERGREEN":(4,80,30), "PURPLE":(100,3,150), "BURGUNDY":(128,2,32),
-			 "NAVY":(1,1,127), "BLACK":(0,0,0)}
+      "ORANGE":(252,140,7), "GREEN":(6,251,6), "GREY":(129,129,129), "BLUE":(60,130,250),
+	  "RED":(249,5,5), "EVERGREEN":(4,80,30), "PURPLE":(100,3,150), "BURGUNDY":(128,2,32),
+	  "NAVY":(1,1,127), "BLACK":(0,0,0)}
 
 size = (700,600)
 screen = pygame.display.set_mode(size)
@@ -44,7 +44,7 @@ def createColours(clicked, clicking, font, pressedColours):
 	click = pygame.mouse.get_pressed()
 	if click[0] == 0:
 		clicking = False
-	for key in cd:
+	for i, key in enumerate(colours):
 		if count < 7:
 			x = 25+(95*count)
 			y = 130
@@ -80,7 +80,7 @@ def submit(clicking, combinedColors, clicked, textLength):
 	if clicked >= 3 and textLength == True:
 		pygame.draw.rect(screen, cd["RED"], [290, 520, 120, 60],0)
 	else:
-			pygame.draw.rect(screen, cd["GREY"], [290, 520, 120, 60],0)
+		pygame.draw.rect(screen, cd["GREY"], [290, 520, 120, 60],0)
 	textSurf,textRect = fontL.render("SUBMIT" , cd["WHITE"])
 	textRect.center = ((290+(120/2)),(520+(60/2)))
 	screen.blit(textSurf, textRect)
@@ -97,6 +97,32 @@ def submit(clicking, combinedColors, clicked, textLength):
 		pygame.draw.rect(screen, cd["BLACK"], [290, 520, 120, 60],2)
 		return [], clicking
 
+# creates reset button
+def reset(clicking, clicked, textLength):
+	# greyed out if a whole password was entered
+	if clicked >= 3 and textLength == 2:
+		pygame.draw.rect(screen, cd["GREY"], [600, 530, 80, 50],0)
+	else:
+		pygame.draw.rect(screen, cd["RED"], [600, 530, 80, 50],0)
+	
+	textSurf,textRect = fontL.render("RESET" , cd["WHITE"])
+	textRect.center = ((600+(80/2)),(530+(50/2)))
+	screen.blit(textSurf, textRect)
+	mouse = pygame.mouse.get_pos()
+	click = pygame.mouse.get_pressed()
+	# if within bounds
+	if (mouse[0] > 600 and mouse[0] < 680 and mouse[1] > 530 and mouse[1] < 580):
+		pygame.draw.rect(screen, cd["WHITE"], [600, 530, 80, 50],2)
+		# if clicked and partial password entered
+		if (click[0] == 1 and clicking == False):
+			if ((clicked != 0 or textLength != 0) and not (clicked >= 3 and textLength == 2)):
+				print ("CLICKED RESET")
+				return True
+	else:
+		pygame.draw.rect(screen, cd["BLACK"], [600, 530, 80, 50],2)
+	return False
+
+
 # Screen to attempt a password input
 def enterPasswordScreen(name, password, clicked, clicking, pressedColours, rChange, gChange, bChange):
 	screen.fill((200,200,200))
@@ -104,7 +130,7 @@ def enterPasswordScreen(name, password, clicked, clicking, pressedColours, rChan
 	clicked, clicking, pressedColours = createColours(clicked, clicking, font, pressedColours)
 	
 	# Labels
-	label1 = (f"Enter your {name} password")
+	label1 = ("Enter your " + name + " password")
 	label2 = ("Your password is a combination of three colours, and 2 letters!")
 	textSurf,textRect = fontL.render(label1, cd["BLACK"])
 	textRect.center = ((250+(200/2)),(15+(60/2)))
@@ -117,13 +143,13 @@ def enterPasswordScreen(name, password, clicked, clicking, pressedColours, rChan
 	combinedColors = ((pressedColours[0]+(rChange*10)) % 255,(pressedColours[1]+(gChange*10)) % 255,(pressedColours[2]+(bChange*10)) % 255)
 	
 	# displays users password colour
-	pygame.draw.rect(screen, combinedColors, [150, 300, 400, 100],0)
-	pygame.draw.rect(screen, cd["BLACK"], [150, 300, 400, 100],2)
+	pygame.draw.rect(screen, combinedColors, [150, 400, 400, 100],0)
+	pygame.draw.rect(screen, cd["BLACK"], [150, 400, 400, 100],2)
 	textColour = cd["WHITE"]
 	if (getLuminosity(combinedColors) >= 128):
 		textColour = cd["BLACK"]
 	textSurf,textRect = fontL.render(str(combinedColors) , textColour)
-	textRect.center = ((150+(400/2)),(300+(100/2)))
+	textRect.center = ((150+(400/2)),(400+(100/2)))
 	screen.blit(textSurf, textRect)
 	
 	# create inputted text box
@@ -150,6 +176,18 @@ def enterPasswordScreen(name, password, clicked, clicking, pressedColours, rChan
 	# submit button
 	submittedColour = []
 	submittedColour,clicking = submit(clicking, combinedColors, clicked, len(textinput.get_text()) == 2)
+
+	# reset button
+	if (reset(clicking, clicked, len(textinput.get_text()))):
+		# reset all of the choices made so far
+		pressedColours = [128,128,128]
+		clicked = 0
+		rChange = 0
+		gChange = 0
+		bChange = 0
+		textinput.clear_text()
+		textinput.update(events)
+
 	
 	# update variable values
 	return clicked, clicking, pressedColours, rChange, gChange, bChange, submittedColour
