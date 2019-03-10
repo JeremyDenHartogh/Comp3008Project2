@@ -28,7 +28,7 @@ window.addEventListener('load',function(){
 
     //combine data1 and data2 into data
     data = combineData(data1, data2);
-    console.log(data);
+    //console.log(data);
 
     //add download link to html
     var link = document.getElementById('downloadlink');
@@ -71,28 +71,36 @@ function formatImageCSV(csv) {
   //store image data
   for(var i = 0; i<imageData.length; i++){
     if(!contains(imageData[i][1], users)){
-      var u = [];
+      var u = {};
       u.id = imageData[i][1];
       u.scheme = "Image21";
       u.successfulLogins =  [];
       u.failedLogins = [];
       users.push(u);
     }
-    if(imageData[i][6] === "badLogin"){
-      var elapsedTime = elapsedTime(imageData[i-2][0], imageData[i-1][0]);
-      var failedLogin;
-      failedLogin.loginAttempt = elapsedTime;
-      users.find(imageData[i][1]).failedLogins.push(failedLogin);
+    var text = String(imageData[i][6]).substr(1).slice(0, -1);
+    if(text === "badLogin"){
+      var getElapsedTime = elapsedTime(String(imageData[i-2][0]).substr(1).slice(0, -1), String(imageData[i-1][0]).substr(1).slice(0, -1));
+      var failedLogin = {};
+      failedLogin.loginAttempt = getElapsedTime;
+      users.find(function checkID(aUser) {
+        return aUser.id == imageData[i][1];
+      }).failedLogins.push(failedLogin);
+      //console.log("bad");
     }
-    else if(imageData[i][6] === "goodLogin"){
-      var elapsedTime = elapsedTime(imageData[i-2][0], imageData[i-1][0]);
-      var successfulLogin;
-      successfulLogin.loginAttempt = elapsedTime;
-      users.find(imageData[i][1]).successfulLogins.push(successfulLogin);
+    else if(text === "goodLogin"){
+      var getElapsedTime = elapsedTime(String(imageData[i-2][0]).substr(1).slice(0, -1), String(imageData[i-1][0]).substr(1).slice(0, -1));
+      var successfulLogin = {};
+      successfulLogin.loginAttempt = getElapsedTime;
+      users.find(function checkID(aUser) {
+        return aUser.id == imageData[i][1];
+      }).successfulLogins.push(successfulLogin);
+      //users[users.indexOf(imageData[i][1])].successfulLogins.push(successfulLogin);
+      //console.log("good");
     }
 
   }
-
+  console.log(users);
   return users;
 }
 
@@ -112,48 +120,47 @@ function formatTextCSV(csv) {
 
   //format data
   var textData = [];
-  var textDataVals = csv.split(",");
   var lineSize = 0;
-  for (var i = 0; i < textDataVals.length; i++) {
-    if (lineSize == 0) {
-      var line = [];
-    }
-    line.push(textDataVals[i]);
-    if (lineSize == 8) {
-      lineSize = 0;
-      textData.push(line);
-    }
-    lineSize++;
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].split(",");
+    textData.push(line);
   }
 
   //store text data
   for(var i = 0; i<textData.length; i++){
-    if(!users.includes(textData[i][1])){
-      var u = [];
+    if(!contains(textData[i][1], users)){
+      var u = {};
       u.id = textData[i][1];
       u.scheme = "text21";
       u.successfulLogins =  [];
       u.failedLogins = [];
       users.push(u);
     }
-    if (textData[i][5] === "login") {
+    var text = String(textData[i][5]).substr(1).slice(0, -1);
+    var text2 = String(textData[i][6]).substr(1).slice(0, -1);
 
-      if(textData[i][6] === "failure") {
-        var elapsedTime = elapsedTime(textData[i-2][0], textData[i-1][0]);
-        var failedLogin;
-        failedLogin.loginAttempt = elapsedTime;
-        users.find(textData[i][1]).failedLogins.push(failedLogin);
+    if (text === "login") {
+
+      if(text2 === "failure") {
+        var getElapsedTime = elapsedTime(String(textData[i-2][0]).substr(1).slice(0, -1), String(textData[i-1][0]).substr(1).slice(0, -1));
+        var failedLogin = {};
+        failedLogin.loginAttempt = getElapsedTime;
+        users.find(function checkID(aUser) {
+          return aUser.id == textData[i][1];
+        }).failedLogins.push(failedLogin);
       }
-      else if(textData[i][6] === "success") {
-        var elapsedTime = elapsedTime(textData[i-2][0], textData[i-1][0]);
-        var successfulLogin;
-        successfulLogin.loginAttempt = elapsedTime;
-        users.find(textData[i][1]).successfulLogins.push(successfulLogin);
+      else if(text2 === "success") {
+        var getElapsedTime = elapsedTime(String(textData[i-2][0]).substr(1).slice(0, -1), String(textData[i-1][0]).substr(1).slice(0, -1));
+        var successfulLogin = {};
+        successfulLogin.loginAttempt = getElapsedTime;
+        users.find(function checkID(aUser) {
+          return aUser.id == textData[i][1];
+        }).successfulLogins.push(successfulLogin);
       }
     }
 
   }
-
+  console.log(users);
   return users;
 }
 
@@ -168,7 +175,6 @@ function combineData(data1, data2){
       line.push(u.successfulLogins.length);
       line.push(u.failedLogins.length);
       line.push(s.time);
-
       data.push(line);
     }
 
