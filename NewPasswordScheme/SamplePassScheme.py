@@ -2,7 +2,7 @@ import pygame
 import random
 import pygame.freetype
 import pygame_textinput
-import string
+import string, sys, getopt
 
 pygame.init()
 
@@ -28,23 +28,32 @@ gChange = 0
 bChange = 0
 
 
+verbose = False
+def verbosePrint(msg):
+	if (verbose):
+		print(msg)
+
+
 # ## TODO ##
 def createPassword1():
 	# 3 colours
 	colour = []
 	iArr = []
+	verbosePrint("PASSWORD USES THESE COLOURS")
 	for i in range(3):
 		rand = random.randint(0,13)
 		# make the colours unique - do they have to be?
 		while (rand in iArr):
 			rand = random.randint(0,13)
 		iArr.append(rand)
-		cArr.append(cd[colours[rand]][i])
-	print(iArr)
-	print(colour)
+		colour.append(cd[colours[rand]][i])
+		verbosePrint(colours[rand])
+	verbosePrint("BASE COLOUR IS")
+	verbosePrint(colour)
 	# random 2 characters
 	tArr = [random.choice(string.ascii_lowercase), random.choice(string.ascii_lowercase)]
-	print(tArr)
+	verbosePrint("CHARACTERS ARE")
+	verbosePrint(tArr)
 
 	return calculateRGBChange(colour, tArr)
 
@@ -57,8 +66,8 @@ def calculatePasswordFromColours(colourArray, charArray):
 
 # perform RGB shift with characters
 def calculateRGBChange(colour, charArray):
-	print("calculateRGBChange")
-	print(colour)
+	verbosePrint("calculateRGBChange")
+	verbosePrint(colour)
 	r = 122-ord(charArray[0])
 	b = 122-ord(charArray[1])
 	g = 122-((ord(charArray[0])+ord(charArray[1])) // 2)
@@ -227,10 +236,22 @@ def enterPasswordScreen(name, password, clicked, clicking, pressedColours, rChan
 	# update variable values
 	return clicked, clicking, pressedColours, rChange, gChange, bChange, submittedColour
 	
+# get command line args if run as main program
+# https://www.tutorialspoint.com/python/python_command_line_arguments.htm
+if __name__ == "__main__":
+	try:
+		opts, args = getopt.getopt(sys.argv[1:],"v")
+	except getopt.GetoptError:
+		print("SamplePassScheme.py [-v]")
+		sys.exit(2)
+	for opt, arg in opts:
+		if opt == '-v':
+			verbose = True
+
 textinput = pygame_textinput.TextInput()
 learnOrEnterPass = "ENTER"
 
-createPassword1()
+verbosePrint(createPassword1())
 
 while not done:
 	events = pygame.event.get()
