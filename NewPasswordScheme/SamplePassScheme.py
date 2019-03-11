@@ -2,6 +2,7 @@ import pygame
 import random
 import pygame.freetype
 import pygame_textinput
+import string
 
 pygame.init()
 
@@ -27,8 +28,42 @@ gChange = 0
 bChange = 0
 
 
-## TODO ##
-# def createPassword1():
+# ## TODO ##
+def createPassword1():
+	# 3 colours
+	colour = []
+	iArr = []
+	for i in range(3):
+		rand = random.randint(0,13)
+		# make the colours unique - do they have to be?
+		while (rand in iArr):
+			rand = random.randint(0,13)
+		iArr.append(rand)
+		cArr.append(cd[colours[rand]][i])
+	print(iArr)
+	print(colour)
+	# random 2 characters
+	tArr = [random.choice(string.ascii_lowercase), random.choice(string.ascii_lowercase)]
+	print(tArr)
+
+	return calculateRGBChange(colour, tArr)
+
+# perform the computation of the rgb password from the 3 colours and 2 characters
+def calculatePasswordFromColours(colourArray, charArray):
+	colour = [128, 128, 128]
+	for i in range(3):
+		colour[i] = colourArray[i][i]
+	return calculateRGBChange(colour, charArray)
+
+# perform RGB shift with characters
+def calculateRGBChange(colour, charArray):
+	print("calculateRGBChange")
+	print(colour)
+	r = 122-ord(charArray[0])
+	b = 122-ord(charArray[1])
+	g = 122-((ord(charArray[0])+ord(charArray[1])) // 2)
+	return ((colour[0]+(r*10)) % 255,(colour[1]+(g*10)) % 255,(colour[2]+(b*10)) % 255)
+			
 #	x = random.randint(0,13)
 #	print (x)
 
@@ -194,6 +229,9 @@ def enterPasswordScreen(name, password, clicked, clicking, pressedColours, rChan
 	
 textinput = pygame_textinput.TextInput()
 learnOrEnterPass = "ENTER"
+
+createPassword1()
+
 while not done:
 	events = pygame.event.get()
 	for event in events:
@@ -203,7 +241,7 @@ while not done:
 		clicked, clicking, pressedColours, rChange, gChange, bChange, submitted = enterPasswordScreen("Bank","PASSWORD", clicked, clicking, pressedColours, rChange, gChange, bChange)
 		if submitted != []:
 			print(submitted)
-			break;
+			break
 
 	# --- Go ahead and update the screen with what we've drawn.
 	pygame.display.flip()
