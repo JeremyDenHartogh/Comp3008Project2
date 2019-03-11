@@ -55,22 +55,26 @@ def createPassword1():
 	verbosePrint("CHARACTERS ARE")
 	verbosePrint(tArr)
 
-	return calculateRGBChange(colour, tArr)
+	return calculateColourAndText(colour, tArr)
 
-# perform the computation of the rgb password from the 3 colours and 2 characters
+# perform the computation of the RGB password from the 3 colours and 2 characters
 def calculatePasswordFromColours(colourArray, charArray):
 	colour = [128, 128, 128]
 	for i in range(3):
 		colour[i] = colourArray[i][i]
-	return calculateRGBChange(colour, charArray)
+	return calculateColourAndText(colour, charArray)
 
 # perform RGB shift with characters
-def calculateRGBChange(colour, charArray):
-	verbosePrint("calculateRGBChange")
+def calculateColourAndText(colour, charArray):
+	verbosePrint("calculateColourAndText")
 	verbosePrint(colour)
 	r = 122-ord(charArray[0])
 	b = 122-ord(charArray[1])
 	g = 122-((ord(charArray[0])+ord(charArray[1])) // 2)
+	return calculateColourAndRGB(colour, r, g, b)
+
+# calculate the final colour using base colour and RGB shifts
+def calculateColourAndRGB(colour, r, g, b):
 	return ((colour[0]+(r*10)) % 255,(colour[1]+(g*10)) % 255,(colour[2]+(b*10)) % 255)
 			
 #	x = random.randint(0,13)
@@ -184,8 +188,8 @@ def enterPasswordScreen(name, password, clicked, clicking, pressedColours, rChan
 	screen.blit(textSurf, textRect)
 	
 	# adds colours created by 3 colour pass and 2 letter text
-	combinedColors = ((pressedColours[0]+(rChange*10)) % 255,(pressedColours[1]+(gChange*10)) % 255,(pressedColours[2]+(bChange*10)) % 255)
-	
+	combinedColors = calculateColourAndRGB(pressedColours, rChange, gChange, bChange)
+
 	# displays users password colour
 	pygame.draw.rect(screen, combinedColors, [150, 400, 400, 100],0)
 	pygame.draw.rect(screen, cd["BLACK"], [150, 400, 400, 100],2)
