@@ -32,7 +32,9 @@ userID = "default"
 accType = "bank"
 # map of users. each user has maps with key=accType value=password
 # {"user1": {"bank": "(password)", "shopping": "(password)", "email": "(password)"}, user2:...}
-passwords = {}
+pwColour = []
+pwStr = ""
+
 
 
 verbose = False
@@ -71,8 +73,8 @@ def comparePassword(user, accType, colour, s):
 	# hardcoded password [pink, purple, grey], 'tn'
 	realPassColours = [253, 3, 129]
 	realPassChars = 'tn'
-	if (realPassColours == colour):
-		if (realPassChars == s):
+	if (pwColour == colour):
+		if (pwStr == s):
 			return True
 	return False
 
@@ -283,6 +285,14 @@ if __name__ == "__main__":
 				passwordStr = line.split("; ", 2)[2]
 				password = passwordStr[5:]
 				print(password)
+				password = eval(password)
+				pwStr = password[3]
+				print(password[0])
+				pwColour.append(cd[password[0]][0])
+				pwColour.append(cd[password[1]][1])
+				pwColour.append(cd[password[2]][2])
+				print(pwColour)
+				print(calculateColourAndText(pwColour, pwStr))
 
 	try:
 		opts, args = getopt.getopt(sys.argv[4:],"v")
