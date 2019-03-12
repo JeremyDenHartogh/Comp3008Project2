@@ -26,6 +26,7 @@ submit = False
 rChange = 0
 gChange = 0
 bChange = 0
+retries = 3
 
 
 verbose = False
@@ -277,7 +278,24 @@ while not done:
 		clicked, clicking, pressedColours, rChange, gChange, bChange, submitted = enterPasswordScreen("Bank","PASSWORD", clicked, clicking, pressedColours, rChange, gChange, bChange)
 		if submitted != []:
 			print(submitted)
-			break
+			correct = comparePassword("abc", "Bank", pressedColours, textinput.get_text())
+			if correct:
+				break
+			else:
+				retries -= 1
+				if (retries <= 0):
+					print("Too many failed logins")
+					break
+				else:
+					pressedColours = [128,128,128]
+					clicked = 0
+					rChange = 0
+					gChange = 0
+					bChange = 0
+					textinput.clear_text()
+					textinput.update(events)
+
+				
 
 	# --- Go ahead and update the screen with what we've drawn.
 	pygame.display.flip()
