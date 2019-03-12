@@ -20,12 +20,12 @@ def createUser():
 	with open('passwords.txt', 'r') as f:
 		lines = f.read().splitlines()
 		if lines != []:
-			id = int(lines[-1].split(",")[0].split(":")[1]) + 1
+			id = int(lines[-1].split(";")[0].split(":")[1]) + 1
 			print (id)
 	with open('passwords.txt', 'a+') as f:
-			f.write(f"id:{id}, type:Email, pass:{str(generatePassword())}\n")
-			f.write(f"id:{id}, type:Banking, pass:{str(generatePassword())}\n")
-			f.write(f"id:{id}, type:Shopping, pass:{str(generatePassword())}\n")
+			f.write(f"id:{id}; type:Email; pass:{str(generatePassword())}\n")
+			f.write(f"id:{id}; type:Banking; pass:{str(generatePassword())}\n")
+			f.write(f"id:{id}; type:Shopping; pass:{str(generatePassword())}\n")
 
 
 createUser()
