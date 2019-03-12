@@ -2,7 +2,7 @@ import pygame
 import random
 import pygame.freetype
 import pygame_textinput
-import string, sys, getopt
+import string, sys, getopt, json
 
 pygame.init()
 
@@ -27,6 +27,12 @@ rChange = 0
 gChange = 0
 bChange = 0
 retries = 3
+learnOrEnterPass = "enter"
+userID = "default"
+accType = "bank"
+# map of users. each user has maps with key=accType value=password
+# {"user1": {"bank": "(password)", "shopping": "(password)", "email": "(password)"}, user2:...}
+passwords = {}
 
 
 verbose = False
@@ -184,13 +190,13 @@ def reset(clicking, clicked, textLength):
 
 
 # Screen to attempt a password input
-def enterPasswordScreen(name, password, clicked, clicking, pressedColours, rChange, gChange, bChange):
+def enterPasswordScreen(clicked, clicking, pressedColours, rChange, gChange, bChange):
 	screen.fill((200,200,200))
 	# Creates colour boxes
 	clicked, clicking, pressedColours = createColours(clicked, clicking, font, pressedColours)
 	
 	# Labels
-	label1 = ("Enter your " + name + " password")
+	label1 = ("Enter your " + accType + " password")
 	label2 = ("Your password is a combination of three colours, and 2 letters!")
 	textSurf,textRect = fontL.render(label1, cd["BLACK"])
 	textRect.center = ((250+(200/2)),(15+(60/2)))
@@ -238,7 +244,7 @@ def enterPasswordScreen(name, password, clicked, clicking, pressedColours, rChan
 	submittedColour = []
 	submittedColour,clicking = submit(clicking, combinedColors, clicked, len(textinput.get_text()) == 2)
 	if (submittedColour != []):
-		print(comparePassword("abc", name, pressedColours, textinput.get_text()))
+		print(comparePassword("abc", accType, pressedColours, textinput.get_text()))
 
 	# reset button
 	if (reset(clicking, clicked, len(textinput.get_text()))):
@@ -258,17 +264,30 @@ def enterPasswordScreen(name, password, clicked, clicking, pressedColours, rChan
 # get command line args if run as main program
 # https://www.tutorialspoint.com/python/python_command_line_arguments.htm
 if __name__ == "__main__":
+	if len(sys.argv) < 4:
+		print("SamplePassScheme.py <learn/enter> <user-id> <account-type>")
+		sys.exit(1)
+	
+	learnOrEnterPass = sys.argv[1]
+	userID = sys.argv[2]
+	accType = sys.argv[3]
+
+	# check if user id/account type is in password file
+	f = open("password_file.txt", "r")
+	for line in f:
+		# parse the line into a password and add to passwords
+		verbosePrint(line)
+
 	try:
-		opts, args = getopt.getopt(sys.argv[1:],"v")
+		opts, args = getopt.getopt(sys.argv[4:],"v")
 	except getopt.GetoptError:
-		print("SamplePassScheme.py [-v]")
+		print("SamplePassScheme.py <learn/enter> <user-id> <account-type> [-v]")
 		sys.exit(2)
 	for opt, arg in opts:
 		if opt == '-v':
 			verbose = True
 
 textinput = pygame_textinput.TextInput()
-learnOrEnterPass = "ENTER"
 
 verbosePrint(createPassword1())
 
@@ -277,8 +296,8 @@ while not done:
 	for event in events:
 		if event.type == pygame.QUIT:
 			done = True
-	if learnOrEnterPass == "ENTER":
-		clicked, clicking, pressedColours, rChange, gChange, bChange, submitted = enterPasswordScreen("Bank","PASSWORD", clicked, clicking, pressedColours, rChange, gChange, bChange)
+	if learnOrEnterPass == "enter":
+		clicked, clicking, pressedColours, rChange, gChange, bChange, submitted = enterPasswordScreen(clicked, clicking, pressedColours, rChange, gChange, bChange)
 		if submitted != []:
 			print(submitted)
 			correct = comparePassword("abc", "Bank", pressedColours, textinput.get_text())
@@ -297,8 +316,10 @@ while not done:
 					bChange = 0
 					textinput.clear_text()
 					textinput.update(events)
-
-				
+	elif learnOrEnterPass == "learn":
+		# run the learn function
+		print("Learn")
+		break
 
 	# --- Go ahead and update the screen with what we've drawn.
 	pygame.display.flip()
