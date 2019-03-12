@@ -1,44 +1,38 @@
-
+var data = [];  //userid, scheme (Text21 or Image21), numlogins, numSuccess, numFailed, time
+var data1;
+var data2;
 
 window.addEventListener('load',function(){
   var fileInput = document.getElementById("csv1");
-  var data = [];
-  readFile = function () {
+  var fileInput2 = document.getElementById("csv2");
+
+
+  readFile1 = function () {
     var reader = new FileReader();
-
     reader.onload = function () {
-
-    data1 = formatImageCSV(reader.result);
+      data1 = formatImageCSV(reader.result);
     };
     // start reading the file. When it is done, calls the onload event defined above.
     reader.readAsBinaryString(fileInput.files[0]);
-
   };
-  fileInput.addEventListener('change', readFile);
 
-  var fileInput2 = document.getElementById("csv2");
-  readFile = function () {
+  readFile2 = function () {
     var reader = new FileReader();
-    var data2;
     reader.onload = function () {
       data2 = formatTextCSV(reader.result);
+
+      //add download link to html
+      var link = document.getElementById('downloadlink');
+      link.href = makeFile(JSON.stringify(data, null, 2));
+      link.style.display = 'block';
     };
+
     // start reading the file. When it is done, calls the onload event defined above.
     reader.readAsBinaryString(fileInput2.files[0]);
-
-    //combine data1 and data2 into data
-    data = combineData(data1, data2);
-    //console.log(data);
-
-    //add download link to html
-    var link = document.getElementById('downloadlink');
-    link.href = makeFile(JSON.stringify(data, null, 2));
-    link.style.display = 'block';
   };
-  fileInput2.addEventListener('change', readFile);
 
-
-
+  fileInput.addEventListener('change', readFile1);
+  fileInput2.addEventListener('change', readFile2);
 });
 
 function makeFile(text){
@@ -78,7 +72,7 @@ function formatImageCSV(csv) {
       u.failedLogins = [];
       users.push(u);
     }
-    var text = String(imageData[i][6]).substr(1).slice(0, -1);
+    var text = imageData[i][6];
     if(text === "badLogin"){
       var getElapsedTime = elapsedTime(String(imageData[i-2][0]).substr(1).slice(0, -1), String(imageData[i-1][0]).substr(1).slice(0, -1));
       var failedLogin = {};
@@ -101,6 +95,7 @@ function formatImageCSV(csv) {
 
   }
   console.log(users);
+  data1 = users;
   return users;
 }
 
@@ -136,11 +131,10 @@ function formatTextCSV(csv) {
       u.failedLogins = [];
       users.push(u);
     }
-    var text = String(textData[i][5]).substr(1).slice(0, -1);
-    var text2 = String(textData[i][6]).substr(1).slice(0, -1);
+    var text = textData[i][5];
+    var text2 = textData[i][6];
 
     if (text === "login") {
-
       if(text2 === "failure") {
         var getElapsedTime = elapsedTime(String(textData[i-2][0]).substr(1).slice(0, -1), String(textData[i-1][0]).substr(1).slice(0, -1));
         var failedLogin = {};
@@ -160,14 +154,13 @@ function formatTextCSV(csv) {
     }
 
   }
-  console.log(users);
-  return users;
+  data = combineData(data1, users);
 }
 
 function combineData(data1, data2){
-  var data = [[]]; //userid, scheme (Text21 or Image21), numlogins, numSuccess, numFailed, time
-  for(var u in data1){ //may not like this syntax
-    for(var s in u.successfulLogins){
+  for(var i = 0; i<data1.length; i++){
+    var u = data1[i];
+    for(var s in u.successfulLogins){ //may not like this format
       var line = [];
       line.push(u.id);
       line.push(u.scheme);
@@ -191,7 +184,8 @@ function combineData(data1, data2){
     }
   }
 
-  for(var u in data2){
+  for(var i = 0; i<data2.length; i++){
+    var u = data2[i];
     for(var s in u.successfulLogins){
       var line = [];
       line.push(u.id);
