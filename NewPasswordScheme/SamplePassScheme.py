@@ -273,10 +273,16 @@ if __name__ == "__main__":
 	accType = sys.argv[3]
 
 	# check if user id/account type is in password file
-	f = open("password_file.txt", "r")
+	f = open("passwords.txt", "r")
 	for line in f:
 		# parse the line into a password and add to passwords
 		verbosePrint(line)
+		if userID == line[3]:
+			accStr = line.split("; ")[1].split(":")[1]
+			if accType == accStr:
+				passwordStr = line.split("; ", 2)[2]
+				password = passwordStr[5:]
+				print(password)
 
 	try:
 		opts, args = getopt.getopt(sys.argv[4:],"v")
