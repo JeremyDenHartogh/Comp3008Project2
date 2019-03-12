@@ -1,4 +1,4 @@
-var data = [];  //userid, scheme (Text21 or Image21), numlogins, numSuccess, numFailed, time
+var data = [];  //userid, scheme (Text21 or Image21), numlogins, numSuccess, numFailed, successfulTime, failedTime
 var data1;
 var data2;
 
@@ -20,7 +20,6 @@ window.addEventListener('load',function(){
     var reader = new FileReader();
     reader.onload = function () {
       data2 = formatTextCSV(reader.result);
-
       //add download link to html
       var link = document.getElementById('downloadlink');
       link.href = makeFile(JSON.stringify(data, null, 2));
@@ -146,64 +145,40 @@ function formatTextCSV(csv) {
     }
 
   }
+  console.log(users);
   data = combineData(data1, users);
 }
 
 function combineData(data1, data2){
   for(var i = 0; i<data1.length; i++){
     var u = data1[i];
-    for(var s = 0; s<u.successfulLogins.length; s++){
-      var line = [];
-      line.push(u.id);
-      line.push(u.scheme);
-      line.push(u.successfulLogins.length + u.failedLogins.length);
-      line.push(u.successfulLogins.length);
-      line.push(u.failedLogins.length);
-      line.push(u.successfulLogins[s]);
-      data.push(line);
-    }
-
-    for(var f = 0; f<u.failedLogins.length; f++){
-      var line = [];
-      line.push(u.id);
-      line.push(u.scheme);
-      line.push(u.successfulLogins.length + u.failedLogins.length);
-      line.push(u.successfulLogins.length);
-      line.push(u.failedLogins.length);
-      line.push(u.failedLogins[f]);
-
-      data.push(line);
-    }
+    var line = [];
+    line.push(u.id);
+    line.push(u.scheme);
+    line.push(u.successfulLogins.length + u.failedLogins.length);
+    line.push(u.successfulLogins.length);
+    line.push(u.failedLogins.length);
+    line.push(averageTime(u.successfulLogins));
+    line.push(averageTime(u.failedLogins));
+    data.push(line);
   }
 
   for(var i = 0; i<data2.length; i++){
     var u = data2[i];
-    for(var s = 0; s<u.successfulLogins.length; s++){
-      var line = [];
-      line.push(u.id);
-      line.push(u.scheme);
-      line.push(u.successfulLogins.length + u.failedLogins.length);
-      line.push(u.successfulLogins.length);
-      line.push(u.failedLogins.length);
-      line.push(u.successfulLogins[s]);
-
-      data.push(line);
-    }
-
-    for(var f = 0; f< u.failedLogins.length; f++){
-      var line = [];
-      line.push(u.id);
-      line.push(u.scheme);
-      line.push(u.successfulLogins.length + u.failedLogins.length);
-      line.push(u.successfulLogins.length);
-      line.push(u.failedLogins.length);
-      line.push(u.failedLogins[f]);
-
-      data.push(line);
-    }
+    var line = [];
+    line.push(u.id);
+    line.push(u.scheme);
+    line.push(u.successfulLogins.length + u.failedLogins.length);
+    line.push(u.successfulLogins.length);
+    line.push(u.failedLogins.length);
+    line.push(averageTime(u.successfulLogins));
+    line.push(averageTime(u.failedLogins));
+    data.push(line);
   }
 
+  console.log(data);
   return data;
+
 }
 
 function elapsedTime(firstStamp, secondStamp) { //returns the difference between the two timestamps in seconds
@@ -215,7 +190,7 @@ function elapsedTime(firstStamp, secondStamp) { //returns the difference between
     var seconds1 = parseInt(t1[0])*3600 + parseInt(t1[1])*60 + parseInt(t1[2]);
     var seconds2 = parseInt(t2[0])*3600 + parseInt(t2[1])*60 + parseInt(t2[2]);
 
-    return formatSeconds(seconds2 - seconds1);
+    return seconds2 - seconds1;
 }
 
 function formatSeconds(sec){ //HH:MM:SS
@@ -226,4 +201,15 @@ function formatSeconds(sec){ //HH:MM:SS
   sec -=mins*60;
 
   return hours.toString()+":"+mins.toString()+":"+sec.toString();
+}
+
+function averageTime(attempts) {
+  if (attempts.length === 0) {
+    return 0;
+  }
+  var total = 0;
+  for (var i = 0; i < attempts.length; i++) {
+    total += attempts[i];
+  }
+  return total/attempts.length;
 }
