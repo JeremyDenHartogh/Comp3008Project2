@@ -57,6 +57,18 @@ def createPassword1():
 
 	return calculateColourAndText(colour, tArr)
 
+# verify password entered with actual password
+def comparePassword(user, accType, colour, s):
+	# TODO get the actual password from a file
+
+	# hardcoded password [pink, purple, grey], 'tn'
+	realPassColours = [253, 3, 129]
+	realPassChars = 'tn'
+	if (realPassColours == colour):
+		if (realPassChars == s):
+			return True
+	return False
+
 # perform the computation of the RGB password from the 3 colours and 2 characters
 def calculatePasswordFromColours(colourArray, charArray):
 	colour = [128, 128, 128]
@@ -76,9 +88,6 @@ def calculateColourAndText(colour, charArray):
 # calculate the final colour using base colour and RGB shifts
 def calculateColourAndRGB(colour, r, g, b):
 	return ((colour[0]+(r*10)) % 255,(colour[1]+(g*10)) % 255,(colour[2]+(b*10)) % 255)
-			
-#	x = random.randint(0,13)
-#	print (x)
 
 # GET LUMINOSITY OF THE COLOUR TO ASSIGN TEXT COLOUR
 def getLuminosity(colour):
@@ -92,7 +101,7 @@ def createColours(clicked, clicking, font, pressedColours):
 	click = pygame.mouse.get_pressed()
 	if click[0] == 0:
 		clicking = False
-	for i, key in enumerate(colours):
+	for key in colours:
 		if count < 7:
 			x = 25+(95*count)
 			y = 130
@@ -153,7 +162,7 @@ def reset(clicking, clicked, textLength):
 	else:
 		pygame.draw.rect(screen, cd["RED"], [600, 530, 80, 50],0)
 	
-	textSurf,textRect = fontL.render("RESET" , cd["WHITE"])
+	textSurf,textRect = font.render("RESET" , cd["WHITE"])
 	textRect.center = ((600+(80/2)),(530+(50/2)))
 	screen.blit(textSurf, textRect)
 	mouse = pygame.mouse.get_pos()
@@ -224,6 +233,8 @@ def enterPasswordScreen(name, password, clicked, clicking, pressedColours, rChan
 	# submit button
 	submittedColour = []
 	submittedColour,clicking = submit(clicking, combinedColors, clicked, len(textinput.get_text()) == 2)
+	if (submittedColour != []):
+		print(comparePassword("abc", name, pressedColours, textinput.get_text()))
 
 	# reset button
 	if (reset(clicking, clicked, len(textinput.get_text()))):
