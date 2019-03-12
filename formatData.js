@@ -158,8 +158,8 @@ function combineData(data1, data2){
     line.push(u.successfulLogins.length + u.failedLogins.length);
     line.push(u.successfulLogins.length);
     line.push(u.failedLogins.length);
-    line.push(averageTime(u.successfulLogins));
-    line.push(averageTime(u.failedLogins));
+    line.push(formatSeconds(averageTime(u.successfulLogins)));
+    line.push(formatSeconds(averageTime(u.failedLogins)));
     data.push(line);
   }
 
@@ -171,14 +171,27 @@ function combineData(data1, data2){
     line.push(u.successfulLogins.length + u.failedLogins.length);
     line.push(u.successfulLogins.length);
     line.push(u.failedLogins.length);
-    line.push(averageTime(u.successfulLogins));
-    line.push(averageTime(u.failedLogins));
+    line.push(formatSeconds(averageTime(u.successfulLogins)));
+    line.push(formatSeconds(averageTime(u.failedLogins)));
     data.push(line);
   }
 
   console.log(data);
-  return data;
 
+  return objToCSV(data);
+}
+
+function objToCSV(data){
+  var s = "";
+
+  for(var i = 0; i<data.length; i++){
+    for(var j = 0; j<data[i].length; j++){
+      s+=data[i][j]+",";
+    }
+    s = s.substring(0, s.length - 1);
+  }
+  console.log(s);
+  return JSON.stringify(s);
 }
 
 function elapsedTime(firstStamp, secondStamp) { //returns the difference between the two timestamps in seconds
