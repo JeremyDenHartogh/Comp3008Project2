@@ -74,18 +74,18 @@ function formatImageCSV(csv) {
     }
     var text = imageData[i][6];
     if(text === "badLogin"){
-      var getElapsedTime = elapsedTime(String(imageData[i-2][0]).substr(1).slice(0, -1), String(imageData[i-1][0]).substr(1).slice(0, -1));
+      var time = elapsedTime(imageData[i-2][0], imageData[i-1][0]);
       var failedLogin = {};
-      failedLogin.loginAttempt = getElapsedTime;
+      failedLogin.loginAttempt = time;
       users.find(function checkID(aUser) {
         return aUser.id == imageData[i][1];
       }).failedLogins.push(failedLogin);
       //console.log("bad");
     }
     else if(text === "goodLogin"){
-      var getElapsedTime = elapsedTime(String(imageData[i-2][0]).substr(1).slice(0, -1), String(imageData[i-1][0]).substr(1).slice(0, -1));
+      var time = elapsedTime(imageData[i-2][0], imageData[i-1][0]);
       var successfulLogin = {};
-      successfulLogin.loginAttempt = getElapsedTime;
+      successfulLogin.loginAttempt = time;
       users.find(function checkID(aUser) {
         return aUser.id == imageData[i][1];
       }).successfulLogins.push(successfulLogin);
@@ -136,17 +136,17 @@ function formatTextCSV(csv) {
 
     if (text === "login") {
       if(text2 === "failure") {
-        var getElapsedTime = elapsedTime(String(textData[i-2][0]).substr(1).slice(0, -1), String(textData[i-1][0]).substr(1).slice(0, -1));
+        var time = elapsedTime(textData[i-2][0], textData[i-1][0]);
         var failedLogin = {};
-        failedLogin.loginAttempt = getElapsedTime;
+        failedLogin.loginAttempt = time;
         users.find(function checkID(aUser) {
           return aUser.id == textData[i][1];
         }).failedLogins.push(failedLogin);
       }
       else if(text2 === "success") {
-        var getElapsedTime = elapsedTime(String(textData[i-2][0]).substr(1).slice(0, -1), String(textData[i-1][0]).substr(1).slice(0, -1));
+        var time = elapsedTime(textData[i-2][0], textData[i-1][0]);console.log(time);
         var successfulLogin = {};
-        successfulLogin.loginAttempt = getElapsedTime;
+        successfulLogin.loginAttempt = time;
         users.find(function checkID(aUser) {
           return aUser.id == textData[i][1];
         }).successfulLogins.push(successfulLogin);
@@ -223,7 +223,7 @@ function elapsedTime(firstStamp, secondStamp) { //returns the difference between
     var seconds1 = parseInt(t1[0])*3600 + parseInt(t1[1])*60 + parseInt(t1[2]);
     var seconds2 = parseInt(t2[0])*3600 + parseInt(t2[1])*60 + parseInt(t2[2]);
 
-    return seconds2 - seconds1;
+    return formatSeconds(seconds2 - seconds1);
 }
 
 function formatSeconds(sec){ //HH:MM:SS
