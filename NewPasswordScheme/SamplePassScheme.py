@@ -81,10 +81,12 @@ def calculatePasswordFromColours(colourArray, charArray):
 def calculateColourAndText(colour, charArray):
 	verbosePrint("calculateColourAndText")
 	verbosePrint(colour)
-	r = 122-ord(charArray[0])
-	b = 122-ord(charArray[1])
-	g = 122-((ord(charArray[0])+ord(charArray[1])) // 2)
-	return calculateColourAndRGB(colour, r, g, b)
+	if (charArray[0] in string.ascii_lowercase and charArray[1] in string.ascii_lowercase):
+		r = 122-ord(charArray[0])
+		b = 122-ord(charArray[1])
+		g = 122-((ord(charArray[0])+ord(charArray[1])) // 2)
+		return calculateColourAndRGB(colour, r, g, b)
+	return False
 
 # calculate the final colour using base colour and RGB shifts
 def calculateColourAndRGB(colour, r, g, b):
@@ -217,7 +219,8 @@ def enterPasswordScreen(name, password, clicked, clicking, pressedColours, rChan
 	# change colour box if 2 lower case letters inputted
 	if (len(textinput.get_text()) == 2):
 		myText = textinput.get_text()
-		if (myText[0] >= 'a' and myText[0] <= 'z' and myText[1]>= 'a' and myText[1] <= 'z'):
+		if (myText[0] in string.ascii_lowercase and myText[1] in string.ascii_lowercase):
+		# if (myText[0] >= 'a' and myText[0] <= 'z' and myText[1]>= 'a' and myText[1] <= 'z'):
 			rChange = 122-ord(myText[0])
 			bChange = 122-ord(myText[1])
 			gChange = 122-((ord(myText[0])+ord(myText[1])) // 2)
