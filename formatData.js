@@ -75,20 +75,16 @@ function formatImageCSV(csv) {
     var text = imageData[i][6];
     if(text === "badLogin"){
       var time = elapsedTime(imageData[i-2][0], imageData[i-1][0]);
-      var failedLogin = {};
-      failedLogin.loginAttempt = time;
       users.find(function checkID(aUser) {
         return aUser.id == imageData[i][1];
-      }).failedLogins.push(failedLogin);
+      }).failedLogins.push(time);
       //console.log("bad");
     }
     else if(text === "goodLogin"){
       var time = elapsedTime(imageData[i-2][0], imageData[i-1][0]);
-      var successfulLogin = {};
-      successfulLogin.loginAttempt = time;
       users.find(function checkID(aUser) {
         return aUser.id == imageData[i][1];
-      }).successfulLogins.push(successfulLogin);
+      }).successfulLogins.push(time);
       //users[users.indexOf(imageData[i][1])].successfulLogins.push(successfulLogin);
       //console.log("good");
     }
@@ -137,19 +133,15 @@ function formatTextCSV(csv) {
     if (text === "login") {
       if(text2 === "failure") {
         var time = elapsedTime(textData[i-2][0], textData[i-1][0]);
-        var failedLogin = {};
-        failedLogin.loginAttempt = time;
         users.find(function checkID(aUser) {
           return aUser.id == textData[i][1];
-        }).failedLogins.push(failedLogin);
+        }).failedLogins.push(time);
       }
       else if(text2 === "success") {
-        var time = elapsedTime(textData[i-2][0], textData[i-1][0]);console.log(time);
-        var successfulLogin = {};
-        successfulLogin.loginAttempt = time;
+        var time = elapsedTime(textData[i-2][0], textData[i-1][0]);
         users.find(function checkID(aUser) {
           return aUser.id == textData[i][1];
-        }).successfulLogins.push(successfulLogin);
+        }).successfulLogins.push(time);
       }
     }
 
@@ -160,25 +152,25 @@ function formatTextCSV(csv) {
 function combineData(data1, data2){
   for(var i = 0; i<data1.length; i++){
     var u = data1[i];
-    for(var s in u.successfulLogins){ //may not like this format
+    for(var s = 0; s<u.successfulLogins.length; s++){
       var line = [];
       line.push(u.id);
       line.push(u.scheme);
       line.push(u.successfulLogins.length + u.failedLogins.length);
       line.push(u.successfulLogins.length);
       line.push(u.failedLogins.length);
-      line.push(s.time);
+      line.push(u.successfulLogins[s]);
       data.push(line);
     }
 
-    for(var f in u.failedLogins){
+    for(var f = 0; f<u.failedLogins.length; f++){
       var line = [];
       line.push(u.id);
       line.push(u.scheme);
       line.push(u.successfulLogins.length + u.failedLogins.length);
       line.push(u.successfulLogins.length);
       line.push(u.failedLogins.length);
-      line.push(f.time);
+      line.push(u.failedLogins[f]);
 
       data.push(line);
     }
@@ -186,26 +178,26 @@ function combineData(data1, data2){
 
   for(var i = 0; i<data2.length; i++){
     var u = data2[i];
-    for(var s in u.successfulLogins){
+    for(var s = 0; s<u.successfulLogins.length; s++){
       var line = [];
       line.push(u.id);
       line.push(u.scheme);
       line.push(u.successfulLogins.length + u.failedLogins.length);
       line.push(u.successfulLogins.length);
       line.push(u.failedLogins.length);
-      line.push(s.time);
+      line.push(u.successfulLogins[s]);
 
       data.push(line);
     }
 
-    for(var f in u.failedLogins){
+    for(var f = 0; f< u.failedLogins.length; f++){
       var line = [];
       line.push(u.id);
       line.push(u.scheme);
       line.push(u.successfulLogins.length + u.failedLogins.length);
       line.push(u.successfulLogins.length);
       line.push(u.failedLogins.length);
-      line.push(f.time);
+      line.push(u.failedLogins[f]);
 
       data.push(line);
     }
