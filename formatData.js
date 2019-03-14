@@ -41,19 +41,13 @@ function makeFile(text){
    let row = rowArray.join(",");
    csvContent += row + "\r\n";
   });
-   // If we are replacing a previously generated file we need to
-   // manually revoke the object URL to avoid memory leaks.
-   //if (textFile !== null) {
-     //window.URL.revokeObjectURL(textFile);
-   //}
-   //textFile = window.URL.createObjectURL(csvContent);
-   //return textFile;
+
    var encodedUri = encodeURI(csvContent);
-   var link = document.createElement("a");
+   var link = document.getElementById('downloadlink');
    link.setAttribute("href", encodedUri);
    link.setAttribute("download", "data.csv");
-   document.body.appendChild(link);
-   link.click();
+   link.style.display = 'block';
+
 }
 
 
