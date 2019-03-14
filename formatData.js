@@ -1,4 +1,4 @@
-var data = [];  //userid, scheme (Text21 or Image21), numlogins, numSuccess, numFailed, successfulTime, failedTime
+var data = [["UserID", "Scheme", "NumLogins", "NumSuccessful", "NumFailed", "SuccessTime", "FailedTime"]];  //userid, scheme (Text21 or Image21), numlogins, numSuccess, numFailed, successfulTime, failedTime
 var data1;
 var data2;
 
@@ -84,16 +84,20 @@ function formatImageCSV(csv) {
     var text = imageData[i][6];
     if(text === "badLogin"){
       var time = elapsedTime(imageData[i-2][0], imageData[i-1][0]);
-      users.find(function checkID(aUser) {
-        return aUser.id == imageData[i][1];
-      }).failedLogins.push(time);
+      if (time !== -1) {
+        users.find(function checkID(aUser) {
+          return aUser.id == imageData[i][1];
+        }).failedLogins.push(time);
+      }
       //console.log("bad");
     }
     else if(text === "goodLogin"){
       var time = elapsedTime(imageData[i-2][0], imageData[i-1][0]);
-      users.find(function checkID(aUser) {
-        return aUser.id == imageData[i][1];
-      }).successfulLogins.push(time);
+      if (time !== -1) {
+        users.find(function checkID(aUser) {
+          return aUser.id == imageData[i][1];
+        }).successfulLogins.push(time);
+      }
       //users[users.indexOf(imageData[i][1])].successfulLogins.push(successfulLogin);
       //console.log("good");
     }
@@ -142,15 +146,19 @@ function formatTextCSV(csv) {
     if (text === "login") {
       if(text2 === "failure") {
         var time = elapsedTime(textData[i-2][0], textData[i-1][0]);
-        users.find(function checkID(aUser) {
-          return aUser.id == textData[i][1];
-        }).failedLogins.push(time);
+        if (time !== -1) {
+          users.find(function checkID(aUser) {
+            return aUser.id == textData[i][1];
+          }).failedLogins.push(time);
+        }
       }
       else if(text2 === "success") {
         var time = elapsedTime(textData[i-2][0], textData[i-1][0]);
-        users.find(function checkID(aUser) {
-          return aUser.id == textData[i][1];
-        }).successfulLogins.push(time);
+        if (time !== -1) {
+          users.find(function checkID(aUser) {
+            return aUser.id == textData[i][1];
+          }).successfulLogins.push(time);
+        }
       }
     }
 
@@ -190,19 +198,6 @@ function combineData(data1, data2){
   return data;
 }
 
-function objToCSV(data){
-  var s = "";
-
-  for(var i = 0; i<data.length; i++){
-    for(var j = 0; j<data[i].length; j++){
-      s+=data[i][j]+",";
-    }
-    s = s.substring(0, s.length - 1);
-  }
-  console.log(s);
-  return JSON.stringify(s);
-}
-
 function elapsedTime(firstStamp, secondStamp) { //returns the difference between the two timestamps in seconds
     var t1 = firstStamp.split(" ")[1].split(":");
     var t2 = secondStamp.split(" ")[1].split(":");
@@ -212,7 +207,12 @@ function elapsedTime(firstStamp, secondStamp) { //returns the difference between
     var seconds1 = parseInt(t1[0])*3600 + parseInt(t1[1])*60 + parseInt(t1[2]);
     var seconds2 = parseInt(t2[0])*3600 + parseInt(t2[1])*60 + parseInt(t2[2]);
 
-    return seconds2 - seconds1;
+
+    var diff =  seconds2 - seconds1;
+    if (diff > 100 || diff < 0) {
+      return -1;
+    }
+    return diff;
 }
 
 function formatSeconds(sec){ //HH:MM:SS
