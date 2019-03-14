@@ -26,53 +26,26 @@ submit = False
 rChange = 0
 gChange = 0
 bChange = 0
+# max number of retries if entering password
 retries = 3
 learnOrEnterPass = "enter"
-userID = "default"
-accType = "bank"
-# map of users. each user has maps with key=accType value=password
-# {"user1": {"bank": "(password)", "shopping": "(password)", "email": "(password)"}, user2:...}
+userID = ""
+accType = ""
+# store password for current user's account
+password = []
 pwColour = []
 pwStr = ""
-
-
+# for telling user if they entered correct password when learning
+timer = 0
+result = ""
 
 verbose = False
 def verbosePrint(msg):
 	if (verbose):
 		print(msg)
 
-
-# ## TODO ##
-def createPassword1():
-	# 3 colours
-	colour = []
-	iArr = []
-	verbosePrint("PASSWORD USES THESE COLOURS")
-	for i in range(3):
-		rand = random.randint(0,13)
-		# make the colours unique - do they have to be?
-		while (rand in iArr):
-			rand = random.randint(0,13)
-		iArr.append(rand)
-		colour.append(cd[colours[rand]][i])
-		verbosePrint(colours[rand])
-	verbosePrint("BASE COLOUR IS")
-	verbosePrint(colour)
-	# random 2 characters
-	tArr = [random.choice(string.ascii_lowercase), random.choice(string.ascii_lowercase)]
-	verbosePrint("CHARACTERS ARE")
-	verbosePrint(tArr)
-
-	return calculateColourAndText(colour, tArr)
-
 # verify password entered with actual password
-def comparePassword(user, accType, colour, s):
-	# TODO get the actual password from a file
-
-	# hardcoded password [pink, purple, grey], 'tn'
-	realPassColours = [253, 3, 129]
-	realPassChars = 'tn'
+def comparePassword(colour, s):
 	if (pwColour == colour):
 		if (pwStr == s):
 			return True
@@ -206,6 +179,17 @@ def enterPasswordScreen(clicked, clicking, pressedColours, rChange, gChange, bCh
 	textSurf,textRect = font.render(label2, cd["BLACK"])
 	textRect.center = ((250+(200/2)),(50+(60/2)))
 	screen.blit(textSurf, textRect)
+
+	# say the password if learning
+	if learnOrEnterPass == "learn":
+		label3 = "Your password is:"
+		textSurf,textRect = font.render(label3, cd["BLACK"])
+		textRect.center = ((30+(100/2)),(320+(30/2)))
+		screen.blit(textSurf,textRect)
+		for i, s in enumerate(password):
+			textSurf,textRect = font.render(s, cd["BLACK"])
+			textRect.center = ((30+(100/2)),(350+(30*i)+(30/2)))
+			screen.blit(textSurf,textRect)
 	
 	# adds colours created by 3 colour pass and 2 letter text
 	combinedColors = calculateColourAndRGB(pressedColours, rChange, gChange, bChange)
@@ -217,7 +201,7 @@ def enterPasswordScreen(clicked, clicking, pressedColours, rChange, gChange, bCh
 	if (getLuminosity(combinedColors) >= 128):
 		textColour = cd["BLACK"]
 	textSurf,textRect = fontL.render(str(combinedColors) , textColour)
-	textRect.center = ((150+(400/2)),(400+(100/2)))
+	textRect.center = ((200+(300/2)),(400+(100/2)))
 	screen.blit(textSurf, textRect)
 	
 	# create inputted text box
@@ -228,7 +212,6 @@ def enterPasswordScreen(clicked, clicking, pressedColours, rChange, gChange, bCh
 	if (len(textinput.get_text()) == 2):
 		myText = textinput.get_text()
 		if (myText[0] in string.ascii_lowercase and myText[1] in string.ascii_lowercase):
-		# if (myText[0] >= 'a' and myText[0] <= 'z' and myText[1]>= 'a' and myText[1] <= 'z'):
 			rChange = 122-ord(myText[0])
 			bChange = 122-ord(myText[1])
 			gChange = 122-((ord(myText[0])+ord(myText[1])) // 2)
@@ -246,7 +229,7 @@ def enterPasswordScreen(clicked, clicking, pressedColours, rChange, gChange, bCh
 	submittedColour = []
 	submittedColour,clicking = submit(clicking, combinedColors, clicked, len(textinput.get_text()) == 2)
 	if (submittedColour != []):
-		print(comparePassword("abc", accType, pressedColours, textinput.get_text()))
+		print(comparePassword(pressedColours, textinput.get_text()))
 
 	# reset button
 	if (reset(clicking, clicked, len(textinput.get_text()))):
@@ -259,7 +242,6 @@ def enterPasswordScreen(clicked, clicking, pressedColours, rChange, gChange, bCh
 		textinput.clear_text()
 		textinput.update(events)
 
-	
 	# update variable values
 	return clicked, clicking, pressedColours, rChange, gChange, bChange, submittedColour
 	
@@ -267,7 +249,7 @@ def enterPasswordScreen(clicked, clicking, pressedColours, rChange, gChange, bCh
 # https://www.tutorialspoint.com/python/python_command_line_arguments.htm
 if __name__ == "__main__":
 	if len(sys.argv) < 4:
-		print("SamplePassScheme.py <learn/enter> <user-id> <account-type>")
+		print("SamplePassScheme.py <learn/enter> <user-id> <Email/Banking/Shopping>")
 		sys.exit(1)
 	
 	learnOrEnterPass = sys.argv[1]
@@ -278,26 +260,22 @@ if __name__ == "__main__":
 	f = open("passwords.txt", "r")
 	for line in f:
 		# parse the line into a password and add to passwords
-		verbosePrint(line)
-		if userID == line[3]:
+		if userID == line[3]: # only using one digit user ids
 			accStr = line.split("; ")[1].split(":")[1]
 			if accType == accStr:
 				passwordStr = line.split("; ", 2)[2]
 				password = passwordStr[5:]
-				print(password)
+				verbosePrint(password)
 				password = eval(password)
 				pwStr = password[3]
-				print(password[0])
 				pwColour.append(cd[password[0]][0])
 				pwColour.append(cd[password[1]][1])
 				pwColour.append(cd[password[2]][2])
-				print(pwColour)
-				print(calculateColourAndText(pwColour, pwStr))
 
 	try:
 		opts, args = getopt.getopt(sys.argv[4:],"v")
 	except getopt.GetoptError:
-		print("SamplePassScheme.py <learn/enter> <user-id> <account-type> [-v]")
+		print("SamplePassScheme.py <learn/enter> <user-id> <Email/Banking/Shopping> [-v]")
 		sys.exit(2)
 	for opt, arg in opts:
 		if opt == '-v':
@@ -305,37 +283,51 @@ if __name__ == "__main__":
 
 textinput = pygame_textinput.TextInput()
 
-verbosePrint(createPassword1())
-
 while not done:
 	events = pygame.event.get()
 	for event in events:
 		if event.type == pygame.QUIT:
 			done = True
-	if learnOrEnterPass == "enter":
-		clicked, clicking, pressedColours, rChange, gChange, bChange, submitted = enterPasswordScreen(clicked, clicking, pressedColours, rChange, gChange, bChange)
-		if submitted != []:
-			print(submitted)
-			correct = comparePassword("abc", "Bank", pressedColours, textinput.get_text())
+	clicked, clicking, pressedColours, rChange, gChange, bChange, submitted = enterPasswordScreen(clicked, clicking, pressedColours, rChange, gChange, bChange)
+
+	# correct or wrong stays on screen for a few seconds
+	if timer > 0:
+		if result != "":
+			textSurf,textRect = fontL.render(result, cd["BLACK"])
+			textRect.center = ((30+(100/2)),(500+(50/2)))
+			screen.blit(textSurf,textRect)
+		timer -= 1
+		if timer == 0:
+			result = ""
+
+	if submitted != []:
+		print(submitted)
+		correct = comparePassword(pressedColours, textinput.get_text())
+		if learnOrEnterPass == "enter":
 			if correct:
 				break
 			else:
 				retries -= 1
-				if (retries <= 0):
+				if retries <= 0:
 					print("Too many failed logins")
 					break
-				else:
-					pressedColours = [128,128,128]
-					clicked = 0
-					rChange = 0
-					gChange = 0
-					bChange = 0
-					textinput.clear_text()
-					textinput.update(events)
-	elif learnOrEnterPass == "learn":
-		# run the learn function
-		print("Learn")
-		break
+		else: # learning
+			timer = 180
+			if correct:
+				print("correct")
+				result = "Correct!"
+			else:
+				print("wrong")
+				result = "Wrong!"
+		
+		# reset the password entry
+		pressedColours = [128,128,128]
+		clicked = 0
+		rChange = 0
+		gChange = 0
+		bChange = 0
+		textinput.clear_text()
+		textinput.update(events)
 
 	# --- Go ahead and update the screen with what we've drawn.
 	pygame.display.flip()
