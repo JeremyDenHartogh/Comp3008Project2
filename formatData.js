@@ -21,9 +21,7 @@ window.addEventListener('load',function(){
     reader.onload = function () {
       data2 = formatTextCSV(reader.result);
       //add download link to html
-      var link = document.getElementById('downloadlink');
-      link.href = makeFile(JSON.stringify(data, null, 2));
-      link.style.display = 'block';
+      makeFile(data);
     };
 
     // start reading the file. When it is done, calls the onload event defined above.
@@ -35,15 +33,27 @@ window.addEventListener('load',function(){
 });
 
 function makeFile(text){
-  var data = new Blob([text], {type: 'text/csv'});
+  const data = text;
+  let csvContent = "data:text/csv;charset=utf-8,";
   var textFile;
+
+  data.forEach(function(rowArray){
+   let row = rowArray.join(",");
+   csvContent += row + "\r\n";
+  });
    // If we are replacing a previously generated file we need to
    // manually revoke the object URL to avoid memory leaks.
-   if (textFile !== null) {
-     window.URL.revokeObjectURL(textFile);
-   }
-   textFile = window.URL.createObjectURL(data);
-   return textFile;
+   //if (textFile !== null) {
+     //window.URL.revokeObjectURL(textFile);
+   //}
+   //textFile = window.URL.createObjectURL(csvContent);
+   //return textFile;
+   var encodedUri = encodeURI(csvContent);
+   var link = document.createElement("a");
+   link.setAttribute("href", encodedUri);
+   link.setAttribute("download", "data.csv");
+   document.body.appendChild(link);
+   link.click();
 }
 
 
@@ -177,8 +187,7 @@ function combineData(data1, data2){
   }
 
   console.log(data);
-
-  return objToCSV(data);
+  return data;
 }
 
 function objToCSV(data){
