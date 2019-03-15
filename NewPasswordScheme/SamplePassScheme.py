@@ -3,6 +3,7 @@ import random
 import pygame.freetype
 import pygame_textinput
 import string, sys, getopt, json
+import datetime
 
 pygame.init()
 
@@ -40,6 +41,10 @@ timer = 0
 result = ""
 
 verbose = False
+
+def updateTime():
+	return datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+
 def verbosePrint(msg):
 	if (verbose):
 		print(msg)
@@ -50,6 +55,9 @@ def comparePassword(colour, s):
 		if (pwStr == s):
 			return True
 	return False
+	
+def passToString(password):
+	return (f"({password[0]}-{password[1]}-{password[2]})")
 
 # perform the computation of the RGB password from the 3 colours and 2 characters
 def calculatePasswordFromColours(colourArray, charArray):
@@ -282,57 +290,65 @@ if __name__ == "__main__":
 			verbose = True
 
 textinput = pygame_textinput.TextInput()
+stringPass = passToString(calculateColourAndText(pwColour,pwStr))
+with open('PassAttempts.csv', 'a+') as f:
+	f.write(f"{updateTime()},{userID},{accType},{learnOrEnterPass},start,{stringPass},None\n")
+	while not done:
+		events = pygame.event.get()
+		for event in events:
+			if event.type == pygame.QUIT:
+				done = True
+		clicked, clicking, pressedColours, rChange, gChange, bChange, submitted = enterPasswordScreen(clicked, clicking, pressedColours, rChange, gChange, bChange)
 
-while not done:
-	events = pygame.event.get()
-	for event in events:
-		if event.type == pygame.QUIT:
-			done = True
-	clicked, clicking, pressedColours, rChange, gChange, bChange, submitted = enterPasswordScreen(clicked, clicking, pressedColours, rChange, gChange, bChange)
+		# correct or wrong stays on screen for a few seconds
+		if timer > 0:
+			if result != "":
+				textSurf,textRect = fontL.render(result, cd["BLACK"])
+				textRect.center = ((30+(100/2)),(500+(50/2)))
+				screen.blit(textSurf,textRect)
+			timer -= 1
+			if timer == 0:
+				result = ""
 
-	# correct or wrong stays on screen for a few seconds
-	if timer > 0:
-		if result != "":
-			textSurf,textRect = fontL.render(result, cd["BLACK"])
-			textRect.center = ((30+(100/2)),(500+(50/2)))
-			screen.blit(textSurf,textRect)
-		timer -= 1
-		if timer == 0:
-			result = ""
-
-	if submitted != []:
-		print(submitted)
-		correct = comparePassword(pressedColours, textinput.get_text())
-		if learnOrEnterPass == "enter":
-			if correct:
-				break
-			else:
-				retries -= 1
-				if retries <= 0:
-					print("Too many failed logins")
+		if submitted != []:
+			submitPass = passToString(calculateColourAndText(pressedColours,textinput.get_text()))
+			f.write(f"{updateTime()},{userID},{accType},{learnOrEnterPass},submit,{stringPass},{submitPass}\n")
+			correct = comparePassword(pressedColours, textinput.get_text())
+			if learnOrEnterPass == "enter":
+				if correct:
+					f.write(f"{updateTime()},{userID},{accType},{learnOrEnterPass},success,{stringPass},{submitPass}\n")
 					break
-		else: # learning
-			timer = 180
-			if correct:
-				print("correct")
-				result = "Correct!"
-			else:
-				print("wrong")
-				result = "Wrong!"
-		
-		# reset the password entry
-		pressedColours = [128,128,128]
-		clicked = 0
-		rChange = 0
-		gChange = 0
-		bChange = 0
-		textinput.clear_text()
-		textinput.update(events)
+				else:
+					f.write(f"{updateTime()},{userID},{accType},{learnOrEnterPass},failure,{stringPass},{submitPass}\n")
+					retries -= 1
+					if retries <= 0:
+						f.write(f"{updateTime()},{userID},{accType},{learnOrEnterPass},locked,{stringPass},{submitPass}\n")
+						print("Too many failed logins")
+						break
+			else: # learning
+				timer = 180
+				if correct:
+					f.write(f"{updateTime()},{userID},{accType},{learnOrEnterPass},success,{stringPass},{submitPass}\n")
+					print("correct")
+					result = "Correct!"
+				else:
+					f.write(f"{updateTime()},{userID},{accType},{learnOrEnterPass},failure,{stringPass},{submitPass}\n")
+					print("wrong")
+					result = "Wrong!"
+			
+			# reset the password entry
+			pressedColours = [128,128,128]
+			clicked = 0
+			rChange = 0
+			gChange = 0
+			bChange = 0
+			textinput.clear_text()
+			textinput.update(events)
 
-	# --- Go ahead and update the screen with what we've drawn.
-	pygame.display.flip()
-	# --- Limit to 60 frames per second
-	clock.tick(60)
+		# --- Go ahead and update the screen with what we've drawn.
+		pygame.display.flip()
+		# --- Limit to 60 frames per second
+		clock.tick(60)
 
 	
 	
