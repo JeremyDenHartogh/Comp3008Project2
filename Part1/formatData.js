@@ -170,8 +170,8 @@ function combineData(data1, data2){
     line.push(u.successfulLogins.length + u.failedLogins.length);
     line.push(u.successfulLogins.length);
     line.push(u.failedLogins.length);
-    line.push(formatSeconds(averageTime(u.successfulLogins)));
-    line.push(formatSeconds(averageTime(u.failedLogins)));
+    line.push(averageTime(u.successfulLogins));
+    line.push(averageTime(u.failedLogins));
     data.push(line);
   }
 
@@ -183,8 +183,8 @@ function combineData(data1, data2){
     line.push(u.successfulLogins.length + u.failedLogins.length);
     line.push(u.successfulLogins.length);
     line.push(u.failedLogins.length);
-    line.push(formatSeconds(averageTime(u.successfulLogins)));
-    line.push(formatSeconds(averageTime(u.failedLogins)));
+    line.push(averageTime(u.successfulLogins));
+    line.push(averageTime(u.failedLogins));
     data.push(line);
   }
 
@@ -209,16 +209,6 @@ function elapsedTime(firstStamp, secondStamp) { //returns the difference between
     return diff;
 }
 
-function formatSeconds(sec){ //HH:MM:SS
-  var hours = Math.floor(sec/3600);
-  sec -= hours*3600;
-
-  var mins = Math.floor(sec/60);
-  sec -=mins*60;
-
-  return hours.toString()+":"+mins.toString()+":"+sec.toString();
-}
-
 function averageTime(attempts) {
   if (attempts.length === 0) {
     return 0;
@@ -227,5 +217,5 @@ function averageTime(attempts) {
   for (var i = 0; i < attempts.length; i++) {
     total += attempts[i];
   }
-  return total/attempts.length;
+  return Math.round(total/attempts.length);
 }
