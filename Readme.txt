@@ -29,6 +29,8 @@ python SamplePassScheme.py enter {id} Email
 python SamplePassScheme.py enter {id} Banking
 python SamplePassScheme.py enter {id} Shopping
 
+If above commands don't work, run 'pip install pygame'
+
 git add .
 git commit -a -m "Completed tests for participant {id}"
 git push
