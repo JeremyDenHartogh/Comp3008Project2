@@ -43,7 +43,7 @@ result = ""
 verbose = False
 
 def updateTime():
-	return datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+	return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 def verbosePrint(msg):
 	if (verbose):
