@@ -1,0 +1,12 @@
+UserID,Scheme,NumLogins,NumSuccessful,NumFailed,SuccessTime,FailedTime
+3,Color+Text,3,3,0,7,0
+4,Color+Text,3,3,0,6,0
+5,Color+Text,4,3,1,7,8
+0,Color+Text,3,3,0,10,0
+1,Color+Text,5,2,3,12,13
+6,Color+Text,6,0,6,0,15
+7,Color+Text,3,3,0,5,0
+2,Color+Text,3,3,0,10,0
+9,Color+Text,9,0,9,0,10
+8,Color+Text,3,3,0,10,0
+,Color+Text,0,0,0,0,0

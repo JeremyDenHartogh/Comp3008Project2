@@ -1,19 +1,17 @@
 var data = [["UserID", "Scheme", "NumLogins", "NumSuccessful", "NumFailed", "SuccessTime", "FailedTime"]];  //userid, scheme (Text21 or Image21), numlogins, numSuccess, numFailed, successfulTime, failedTime
 var data1;
-
 window.addEventListener('load',function(){
   var fileInput = document.getElementById("csv1");
-  var fileInput2 = document.getElementById("csv2");
-
 
   readFile1 = function () {
     var reader = new FileReader();
     reader.onload = function () {
-      data1 = formatCSV(reader.result);
+      combineData(formatCSV(reader.result));
+      makeFile(data);
+      console.log(data);
     };
     // start reading the file. When it is done, calls the onload event defined above.
     reader.readAsBinaryString(fileInput.files[0]);
-    makeFile(data);
   };
 
   fileInput.addEventListener('change', readFile1);
@@ -87,7 +85,6 @@ function formatCSV(csv) {
 
   }
   console.log(users);
-  data1 = users;
   return users;
 }
 
@@ -100,18 +97,20 @@ function contains(id, users){
   return false;
 }
 
-function combineData(data1, data2){
+function combineData(data1){
   for(var i = 0; i<data1.length; i++){
     var u = data1[i];
     var line = [];
-    line.push(u.id);
-    line.push(u.scheme);
-    line.push(u.successfulLogins.length + u.failedLogins.length);
-    line.push(u.successfulLogins.length);
-    line.push(u.failedLogins.length);
-    line.push(averageTime(u.successfulLogins));
-    line.push(averageTime(u.failedLogins));
-    data.push(line);
+    if (u.id !== undefined) {
+      line.push(u.id);
+      line.push(u.scheme);
+      line.push(u.successfulLogins.length + u.failedLogins.length);
+      line.push(u.successfulLogins.length);
+      line.push(u.failedLogins.length);
+      line.push(averageTime(u.successfulLogins));
+      line.push(averageTime(u.failedLogins));
+      data.push(line);
+    }
   }
 
   console.log(data);
