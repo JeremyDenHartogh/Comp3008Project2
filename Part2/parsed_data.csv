@@ -1,11 +1,44 @@
-UserID,Scheme,NumLogins,NumSuccessful,NumFailed,SuccessTime,FailedTime
-3,Color+Text,3,3,0,7,0
-4,Color+Text,3,3,0,6,0
-5,Color+Text,4,3,1,7,8
-0,Color+Text,3,3,0,10,0
-1,Color+Text,5,2,3,12,13
-6,Color+Text,6,0,6,0,15
-7,Color+Text,3,3,0,5,0
-2,Color+Text,3,3,0,10,0
-9,Color+Text,9,0,9,0,10
-8,Color+Text,3,3,0,10,0
+UserID,Scheme,NumLogins,NumSuccessful,NumFailed,SuccessTime,FailedTime,,Number of Total Login Attempts Mean
+3,Color+Text,3,3,0,7,0,,4.2
+4,Color+Text,3,3,0,6,0,,
+5,Color+Text,4,3,1,7,8,,Number of Total Login Attempts Median
+0,Color+Text,3,3,0,10,0,,3
+1,Color+Text,5,2,3,12,13,,
+6,Color+Text,6,0,6,0,15,,Number of Total Login Attempts Standard Deviation
+7,Color+Text,3,3,0,5,0,,1.98885785
+2,Color+Text,3,3,0,10,0,,
+9,Color+Text,9,0,9,0,10,,Number of Successful Login Attempts Mean
+8,Color+Text,3,3,0,10,0,,2.3
+,,,,,,,,
+,,,,,,,,Number of Successful Login Attempts Median
+,,,,,,,,3
+,,,,,,,,
+,,,,,,,,Number of Successful Login Attempts Standard Deviation
+,,,,,,,,1.25166556
+,,,,,,,,
+,,,,,,,,Number of Unsuccessful Login Attempts Mean
+,,,,,,,,1.9
+,,,,,,,,
+,,,,,,,,Number of UnSuccessful Login Attempts Median
+,,,,,,,,0
+,,,,,,,,
+,,,,,,,,Number of Unsuccessful Login Attempts Standard Deviation
+,,,,,,,,3.17804972
+,,,,,,,,
+,,,,,,,,Successful Login Time Mean
+,,,,,,,,6.7
+,,,,,,,,
+,,,,,,,,Successful Login Time Median
+,,,,,,,,7
+,,,,,,,,
+,,,,,,,,Successful Login Standard Deviation
+,,,,,,,,4.1379007
+,,,,,,,,
+,,,,,,,,Unsuccessful Login Time Mean
+,,,,,,,,4.6
+,,,,,,,,
+,,,,,,,,Unsuccessful Login Time Median
+,,,,,,,,0
+,,,,,,,,
+,,,,,,,,Unsuccessful Login Standard Deviation
+,,,,,,,,6.2039414
