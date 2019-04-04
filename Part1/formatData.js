@@ -1,11 +1,12 @@
 var data = [["UserID", "Scheme", "NumLogins", "NumSuccessful", "NumFailed", "SuccessTime", "FailedTime"]];  //userid, scheme (Text21 or Image21), numlogins, numSuccess, numFailed, successfulTime, failedTime
-var data1;
-var data2;
+var data1; //to hold the text data
+var data2; //to hold the image data
 
+// format csv data uploaded
+// add download link after formatted
 window.addEventListener('load',function(){
   var fileInput = document.getElementById("csv1");
   var fileInput2 = document.getElementById("csv2");
-
 
   readFile1 = function () {
     var reader = new FileReader();
@@ -32,6 +33,9 @@ window.addEventListener('load',function(){
   fileInput2.addEventListener('change', readFile2);
 });
 
+// make csv file from data object
+// set the a tag in the html data to be the newly made csv
+// display the link
 function makeFile(text){
   const data = text;
   let csvContent = "data:text/csv;charset=utf-8,";
@@ -51,7 +55,7 @@ function makeFile(text){
 }
 
 
-
+// use inputed image csv to create data object
 function formatImageCSV(csv) {
   var lines=csv.split("\n");
 
@@ -83,7 +87,6 @@ function formatImageCSV(csv) {
           return aUser.id == imageData[i][1];
         }).failedLogins.push(time);
       }
-      //console.log("bad");
     }
     else if(text === "goodLogin"){
       var time = elapsedTime(imageData[i-2][0], imageData[i-1][0]);
@@ -92,16 +95,14 @@ function formatImageCSV(csv) {
           return aUser.id == imageData[i][1];
         }).successfulLogins.push(time);
       }
-      //users[users.indexOf(imageData[i][1])].successfulLogins.push(successfulLogin);
-      //console.log("good");
     }
-
   }
   console.log(users);
   data1 = users;
   return users;
 }
 
+// check if users array contains a user with given id
 function contains(id, users){
   for(var i = 0; i<users.length; i++){
     if(id == users[i].id){
@@ -111,9 +112,9 @@ function contains(id, users){
   return false;
 }
 
+// use inputed text csv to create data object
 function formatTextCSV(csv) {
   var lines=csv.split("\n");
-
   var users = [];
 
   //format data
@@ -155,12 +156,13 @@ function formatTextCSV(csv) {
         }
       }
     }
-
   }
   console.log(users);
   data = combineData(data1, users);
 }
 
+// create one data object from data1 and data2
+// reformat to desired scheme
 function combineData(data1, data2){
   for(var i = 0; i<data1.length; i++){
     var u = data1[i];
@@ -192,7 +194,9 @@ function combineData(data1, data2){
   return data;
 }
 
-function elapsedTime(firstStamp, secondStamp) { //returns the difference between the two timestamps in seconds
+// given two timestamps
+// returns the difference between them in seconds
+function elapsedTime(firstStamp, secondStamp) {
     var t1 = firstStamp.split(" ")[1].split(":");
     var t2 = secondStamp.split(" ")[1].split(":");
 
@@ -201,7 +205,6 @@ function elapsedTime(firstStamp, secondStamp) { //returns the difference between
     var seconds1 = parseInt(t1[0])*3600 + parseInt(t1[1])*60 + parseInt(t1[2]);
     var seconds2 = parseInt(t2[0])*3600 + parseInt(t2[1])*60 + parseInt(t2[2]);
 
-
     var diff =  seconds2 - seconds1;
     if (diff > 100 || diff < 0) {
       return -1;
@@ -209,6 +212,7 @@ function elapsedTime(firstStamp, secondStamp) { //returns the difference between
     return diff;
 }
 
+// compute average 
 function averageTime(attempts) {
   if (attempts.length === 0) {
     return 0;
