@@ -24,3 +24,6 @@ Files:
 			Source: https://github.com/Nearoo/pygame-text-input/blob/master/pygame_textinput.py  
 		* SamplePassScheme.py - Testing framework for new password scheme
 		* survey.pdf - list of survey questions
+		* results.csv - csv of responses to survey questions
+		* results_*.csv - subset of questions with responses from results.csv
+		results_with_hist.xlsx - responses to survey with mean, median and sd.

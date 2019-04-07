@@ -13,11 +13,6 @@ res2 <- wilcox.test(tab$I.feel.that.text.passwords.are.secure.,
                     paired = TRUE)
 print(res2)
 
-# wilcox test comparing preference of scheme or neutrality
-res3 <- wilcox.test(tab$I.prefer.text.only.passwords.to.colour.text.passwords.,
-                    mu = 3)
-print(res3)
-
 # convert to factors for graphing
 lik1 = read.csv("results_like_dislike.csv", header = TRUE)
 lik1$How.much.do.you.like.the.colours. = factor(lik1$How.much.do.you.like.the.colours.,
