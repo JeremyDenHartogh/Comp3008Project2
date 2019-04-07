@@ -26,4 +26,4 @@ Files:
 		* survey.pdf - list of survey questions
 		* results.csv - csv of responses to survey questions
 		* results_*.csv - subset of questions with responses from results.csv
-		results_with_hist.xlsx - responses to survey with mean, median and sd.
+		* results_with_hist.xlsx - responses to survey with mean, median and sd.
