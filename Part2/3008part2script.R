@@ -1,6 +1,20 @@
 library(likert)
 tab = read.csv("results_likert_only.csv", header = TRUE)
 
+times1 = read.csv("../Part1/data.csv", header = TRUE)
+times2 = read.csv("parsed_data.csv", header = TRUE)
+times1 = times1[times1$Scheme == "text21", ]
+
+t1 = t.test(times1$SuccessTime,
+            times2$SuccessTime,
+            paired = FALSE)
+print(t1)
+
+t2 = t.test(times1$FailedTime,
+            times2$FailedTime,
+            paired = FALSE)
+print(t2)
+
 # paired wilcox test on memorability
 res1 <- wilcox.test(tab$Colour.text.passwords.are.easy.to.remember., 
                     tab$Text.passwords.are.easy.to.remember., 
@@ -18,7 +32,7 @@ lik1 = read.csv("results_like_dislike.csv", header = TRUE)
 lik1$How.much.do.you.like.the.colours. = factor(lik1$How.much.do.you.like.the.colours.,
                                                levels = c("1","2","3","4","5"),
                                                ordered =TRUE)
-lik1$What.is.your.opinion.on.the.mix.of.colours.and.text.Â. = factor(lik1$What.is.your.opinion.on.the.mix.of.colours.and.text.Â.,
+lik1$What.is.your.opinion.on.the.mix.of.colours.and.text.�. = factor(lik1$What.is.your.opinion.on.the.mix.of.colours.and.text.Â.,
                                                                      levels = c("1","2","3","4","5"),
                                                                      ordered = TRUE)
 lik1$What.is.your.opinion.of.using.text.only.passwords. = factor(lik1$What.is.your.opinion.of.using.text.only.passwords.,
