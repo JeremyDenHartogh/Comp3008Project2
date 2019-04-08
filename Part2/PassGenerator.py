@@ -1,5 +1,11 @@
 import random
 
+####################
+# generatePassword -> Generates a new random password
+# createUser -> Creates a new user, with three new passwords, one for email, one for banking and one for shopping
+####################
+
+
 colours = ["WHITE", "YELLOW", "TURQUOISE", "PINK", "ORANGE", "GREEN", "GREY", "BLUE", "RED", 
 		   "EVERGREEN", "PURPLE", "BURGUNDY", "NAVY", "BLACK"]
 

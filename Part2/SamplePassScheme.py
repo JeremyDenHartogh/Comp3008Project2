@@ -5,6 +5,20 @@ import pygame_textinput
 import string, sys, getopt, json
 import datetime
 
+#########################
+# updateTime -> Updated the time variable to the current time (used for logging)
+# verbosePrint -> Used for printing messages in debugging
+# comparePassword -> Checks if the users inputted password matches the assigned password
+# passToString -> Converts numeric password to string, used to print password
+# calculatePasswordFromColours -> perform the computation of the RGB password from the 3 colours and 2 characters
+# calculateColourAndText -> perform RGB shift with characters
+# calculateColourAndRGB -> calculate the final colour using base colour and RGB shifts, used to obtain the final colour
+# getLuminosity -> gets the luminosity of the background colours, to determine if dark or light text should be overlayed
+# createColours -> Used to create the colour boxes that appear on the screen, and makes them clickable
+# submit -> creates the submit button on the screen, and makes it clickable. 
+# reset -> Creates and makes clickable the reset button on the screen
+# enterPasswordScreen -> The base controller function, all actions run through this function
+#########################
 pygame.init()
 
 colours = ["WHITE", "YELLOW", "TURQUOISE", "PINK", "ORANGE", "GREEN", "GREY", "BLUE", "RED", 
@@ -350,8 +364,3 @@ with open('PassAttempts.csv', 'a+') as f:
 		# --- Limit to 60 frames per second
 		clock.tick(60)
 
-	
-	
-# TO DO LIST
-# CREATE GET NEW PASSWORD SCREEN
-# CREATE HOME SCREEN

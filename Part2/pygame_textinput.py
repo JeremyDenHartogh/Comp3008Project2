@@ -1,3 +1,6 @@
+# NOT CREATED BY THIS GROUP, THIS IS AN EXTERNAL SCRIPT THAT IS USED TO MAKE TEXTBOXES FUNCTION IN PYGAME
+
+
 """
 Copyright 2017, Silas Gyger, silasgyger@gmail.com, All rights reserved.
 
