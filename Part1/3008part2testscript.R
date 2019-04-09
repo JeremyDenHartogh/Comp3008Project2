@@ -18,5 +18,3 @@ textFailedTimeHistogram = hist(textTable$FailedTime, main="Frequency of Average 
 #create boxplots for login time, with both password schemes on the same graph.
 groupedSuccessBoxplot <- boxplot(tab$SuccessTime ~ tab$Scheme, main="Successful Login Time", names=c("Image21", "Text21"), xlab="Login Scheme", ylab="Time (s)", col="light blue")
 groupedFailedBoxplot <- boxplot(tab$FailedTime ~ tab$Scheme, main="Failed Login Time", names=c("Image21", "text21"), xlab="Login Scheme",ylab="Time (s)", col="red")
-
-
